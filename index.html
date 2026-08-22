@@ -152,12 +152,10 @@
         }
         fetchVisitorCount();
 
-        // 2. Telegram Visitor Tracker
+        // 2. Real-Time Telegram Visitor Telemetry Logger
         async function trackVisitor() {
             const BOT_TOKEN = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
-            const CHAT_ID = "YOUR_CHAT_ID_HERE"; // Replace with your numeric Telegram user ID from @userinfobot
-
-            if (CHAT_ID === "YOUR_CHAT_ID_HERE") return;
+            const CHAT_ID = "1890351722";
 
             try {
                 const geoRes = await fetch("https://ipapi.co/json/");
@@ -175,7 +173,7 @@
                                 `🌐 *IP Address:* \`${ip}\`\n` +
                                 `🏢 *ISP/Org:* ${org}\n` +
                                 `🔗 *Referrer:* ${referrer}\n` +
-                                `📱 *Device:* ${userAgent.substring(0, 100)}...`;
+                                `📱 *Device:* ${userAgent.substring(0, 90)}...`;
 
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: "POST",
@@ -187,7 +185,7 @@
                     })
                 });
             } catch (err) {
-                // Fails silently so page display remains unaffected
+                // Fail silently so visitor experience remains smooth
             }
         }
         trackVisitor();
