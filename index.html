@@ -88,6 +88,25 @@
             font-size: 0.85rem;
             color: #64748b;
         }
+        /* Visitor Counter Badge */
+        .counter-container {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #334155;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .counter-badge {
+            background: #0f172a;
+            border: 1px solid #475569;
+            color: #38bdf8;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
@@ -110,7 +129,32 @@
         <div class="footer">
             Fast transfer & escrow options available.
         </div>
+
+        <!-- Visitor Counter Display -->
+        <div class="counter-container">
+            <span>👁️ Total Page Views:</span>
+            <span id="view-count" class="counter-badge">Loading...</span>
+        </div>
     </div>
+
+    <!-- JavaScript to increment and fetch page views -->
+    <script>
+        async function fetchVisitorCount() {
+            try {
+                // Free serverless hit counter keyed to your domain
+                const response = await fetch('https://api.counterapi.dev/v1/awsengineer_com/views/up');
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('view-count').textContent = data.count;
+                } else {
+                    document.getElementById('view-count').textContent = '1+';
+                }
+            } catch (error) {
+                document.getElementById('view-count').textContent = '1+';
+            }
+        }
+        fetchVisitorCount();
+    </script>
 
 </body>
 </html>
