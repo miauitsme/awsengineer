@@ -129,34 +129,35 @@
             Fast transfer & escrow options available.
         </div>
 
-        <!-- Visitor Hit Counter Badge -->
         <div class="counter-container">
             <span>👁️ Total Page Views:</span>
-            <span id="view-count" class="counter-badge">Loading...</span>
+            <span id="view-count" class="counter-badge">12,564</span>
         </div>
     </div>
 
     <script>
         const BOT_TOKEN = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
         const CHAT_ID = "1890351722";
+        const BASE_VIEWS = 12564; // Custom starting count
 
-        // 1. Visitor Hit Counter
+        // 1. Visitor Hit Counter with Custom Base Number
         async function fetchVisitorCount() {
             try {
                 const response = await fetch('https://api.counterapi.dev/v1/awsengineer_com/views/up');
                 if (response.ok) {
                     const data = await response.json();
-                    document.getElementById('view-count').textContent = data.count;
+                    const totalViews = BASE_VIEWS + data.count;
+                    document.getElementById('view-count').textContent = totalViews.toLocaleString();
                 } else {
-                    document.getElementById('view-count').textContent = '1+';
+                    document.getElementById('view-count').textContent = BASE_VIEWS.toLocaleString();
                 }
             } catch (error) {
-                document.getElementById('view-count').textContent = '1+';
+                document.getElementById('view-count').textContent = BASE_VIEWS.toLocaleString();
             }
         }
         fetchVisitorCount();
 
-        // 2. Real-Time Visitor Telemetry (No Location / No Coordinates)
+        // 2. Telemetry Logger (No Location / No GPS Access Calls)
         async function trackVisitor() {
             let ip = "Unknown IP";
             let isp = "Unknown ISP";
@@ -169,7 +170,6 @@
                     isp = data.connection ? data.connection.isp : (data.isp || isp);
                 }
             } catch (err) {
-                // Secondary IP fallback
                 try {
                     const res2 = await fetch("https://api.ipify.org?format=json");
                     const data2 = await res2.json();
