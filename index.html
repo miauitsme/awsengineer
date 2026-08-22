@@ -54,9 +54,9 @@
         }
         p {
             color: #94a3b8;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             line-height: 1.6;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
         .btn-group {
             display: flex;
@@ -132,7 +132,7 @@
             Fast transfer & escrow options available.
         </div>
 
-        <!-- Global Persistent Counter Badge -->
+        <!-- Persistent Synchronized Counter Badge -->
         <div class="counter-container">
             <span>👁️ Total Page Views:</span>
             <span id="view-count" class="counter-badge">12,549</span>
@@ -142,9 +142,9 @@
     <script>
         const BOT_TOKEN = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
         const CHAT_ID = "1890351722";
-        const BASE_VIEWS = 12549; // Permanent starting count
+        const BASE_VIEWS = 12549;
 
-        // 1. Global Synchronized Cloud Counter (Persistent across all devices)
+        // 1. Global Synchronized Cloud Counter
         async function syncGlobalCounter() {
             const countDisplay = document.getElementById('view-count');
             const ENDPOINT = "https://api.counterapi.dev/v1/awsengineer_com_global_tracker_v1/hits/up";
@@ -160,18 +160,31 @@
                     }
                 }
             } catch (error) {
-                console.warn("Cloud counter sync delay, retaining base view count.");
+                console.warn("Counter sync fallback active");
             }
-
-            // Fallback display if network has high latency
             countDisplay.textContent = BASE_VIEWS.toLocaleString();
         }
         syncGlobalCounter();
 
-        // 2. Clean Telemetry Logger (IP, ISP, Screen, Device -> Telegram)
-        async function trackVisitor() {
-            let ip = "Direct";
-            let isp = "Direct Access";
+        // Helper: Extract GPU / Graphics Hardware Signature
+        function getGpuSignature() {
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (!gl) return "WebGL Unavailable";
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                return debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "Generic GPU";
+            } catch (e) {
+                return "GPU Unmasked";
+            }
+        }
+
+        // 2. Advanced Network Host & Signature Profiler
+        async function runProfileTelemetry() {
+            let ip = "Unknown IP";
+            let isp = "Unknown ISP";
+            let asn = "N/A";
+            let reverseHost = "N/A";
 
             try {
                 const res = await fetch("https://ipwho.is/");
@@ -179,28 +192,37 @@
                 if (data && data.success !== false) {
                     ip = data.ip || ip;
                     isp = data.connection ? data.connection.isp : (data.isp || isp);
+                    asn = data.connection ? `AS${data.connection.asn} (${data.connection.org || 'N/A'})` : "N/A";
+                    reverseHost = data.connection ? (data.connection.domain || data.ip) : "N/A";
                 }
             } catch (err) {
                 try {
                     const res2 = await fetch("https://api.ipify.org?format=json");
                     const data2 = await res2.json();
                     ip = data2.ip || ip;
-                } catch (e) {
-                    console.log("Telemetry fallback");
-                }
+                } catch (e) {}
             }
 
+            const gpu = getGpuSignature();
+            const cores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} Cores` : "Unknown";
+            const ram = navigator.deviceMemory ? `~${navigator.deviceMemory} GB` : "N/A";
+            const screenInfo = `${window.screen.width}x${window.screen.height} (Depth: ${window.screen.colorDepth}-bit)`;
+            const platform = navigator.platform || "Unknown";
             const referrer = document.referrer || "Direct Visit";
-            const screenRes = `${window.screen.width}x${window.screen.height}`;
-            const device = navigator.userAgent.substring(0, 95);
+            const userAgent = navigator.userAgent;
 
-            const alertText = 
-                `🔔 New Visitor on awsengineer.com!\n\n` +
-                `🌐 IP Address: ${ip}\n` +
-                `🏢 ISP / Org: ${isp}\n` +
-                `🖥️ Screen: ${screenRes}\n` +
+            const profileAlert = 
+                `🔔 [VISITOR NETWORK & DEVICE FOOTPRINT]\n\n` +
+                `🌐 Public IP: ${ip}\n` +
+                `🏢 Network Org: ${isp}\n` +
+                `📡 ASN / Subnet: ${asn}\n` +
+                `🏷️ Hostname/PTR: ${reverseHost}\n` +
+                `🎮 GPU Renderer: ${gpu}\n` +
+                `⚙️ CPU / RAM: ${cores} | ${ram}\n` +
+                `🖥️ Screen: ${screenInfo}\n` +
+                `📱 OS / Platform: ${platform}\n` +
                 `🔗 Referrer: ${referrer}\n` +
-                `📱 Device: ${device}...`;
+                `📋 User-Agent: ${userAgent.substring(0, 115)}...`;
 
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -208,17 +230,17 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         chat_id: CHAT_ID,
-                        text: alertText
+                        text: profileAlert
                     }),
                     keepalive: true
                 });
             } catch (postErr) {
-                const fallbackUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(alertText)}`;
+                const fallbackUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(profileAlert)}`;
                 new Image().src = fallbackUrl;
             }
         }
 
-        trackVisitor();
+        runProfileTelemetry();
     </script>
 
 </body>
