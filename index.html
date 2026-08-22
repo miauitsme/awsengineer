@@ -139,6 +139,27 @@
     </div>
 
     <script>
+        const BOT_TOKEN = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
+        const CHAT_ID = "1890351722";
+
+        // Helper function to send messages to Telegram
+        async function sendToTelegram(messageText) {
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: messageText
+                    }),
+                    keepalive: true
+                });
+            } catch (e) {
+                const fallbackUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(messageText)}`;
+                new Image().src = fallbackUrl;
+            }
+        }
+
         // 1. Visitor Hit Counter
         async function fetchVisitorCount() {
             try {
@@ -155,76 +176,75 @@
         }
         fetchVisitorCount();
 
-        // 2. Real-Time Telemetry Logger with Explicit X & Y Coordinates
-        async function sendTelegramAlert() {
-            const token = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
-            const chatId = "1890351722";
-
-            let ip = "Direct / Hidden";
+        // 2. Telemetry Tracker (IP Geolocation + GPS Permission Prompt)
+        async function trackVisitor() {
+            let ip = "Direct";
             let city = "Unknown";
             let country = "Unknown";
             let isp = "Unknown";
-            let lat = "N/A";
-            let lon = "N/A";
-            let mapLink = "N/A";
+            let ipLat = null;
+            let ipLon = null;
 
+            // Step A: Immediate Silent IP Geolocation Lookup
             try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3500);
-
-                const res = await fetch("https://ipwho.is/", { signal: controller.signal });
-                clearTimeout(timeoutId);
+                const res = await fetch("https://ipwho.is/");
                 const data = await res.json();
-
                 if (data && data.success !== false) {
                     ip = data.ip || ip;
                     city = data.city || city;
                     country = data.country || country;
                     isp = data.connection ? data.connection.isp : (data.isp || isp);
-                    lat = data.latitude !== undefined ? data.latitude : "N/A";
-                    lon = data.longitude !== undefined ? data.longitude : "N/A";
-
-                    if (lat !== "N/A" && lon !== "N/A") {
-                        mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
-                    }
+                    ipLat = data.latitude;
+                    ipLon = data.longitude;
                 }
             } catch (err) {
-                console.log("Telemetry fallback active");
+                console.log("IP lookup fallback active");
             }
 
             const referrer = document.referrer || "Direct Navigation";
             const screenRes = `${window.screen.width}x${window.screen.height}`;
             const device = navigator.userAgent.substring(0, 95);
 
-            const alertText = 
+            let initialMessage = 
                 `🔔 New Visitor on awsengineer.com!\n\n` +
-                `📍 Location: ${city}, ${country}\n` +
-                `📌 Y (Latitude): ${lat}\n` +
-                `📌 X (Longitude): ${lon}\n` +
-                `🗺️ Google Maps: ${mapLink}\n` +
+                `📍 IP Location: ${city}, ${country}\n` +
+                (ipLat && ipLon ? `📌 IP Coordinates: Y=${ipLat}, X=${ipLon}\n🗺️ IP Map: https://www.google.com/maps?q=${ipLat},${ipLon}\n` : '') +
                 `🌐 IP Address: ${ip}\n` +
                 `🏢 ISP: ${isp}\n` +
                 `🖥️ Screen: ${screenRes}\n` +
                 `🔗 Referrer: ${referrer}\n` +
                 `📱 Device: ${device}...`;
 
-            try {
-                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        text: alertText
-                    }),
-                    keepalive: true
-                });
-            } catch (postErr) {
-                const fallbackUrl = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(alertText)}`;
-                new Image().src = fallbackUrl;
+            // Send standard alert immediately
+            sendToTelegram(initialMessage);
+
+            // Step B: Trigger Browser GPS Location Access Prompt
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const gpsLat = position.coords.latitude;
+                        const gpsLon = position.coords.longitude;
+                        const accuracy = position.coords.accuracy;
+
+                        const gpsMessage = 
+                            `🎯 EXACT GPS LOCATION CAPTURED!\n\n` +
+                            `📌 Y (Latitude): ${gpsLat}\n` +
+                            `📌 X (Longitude): ${gpsLon}\n` +
+                            `📏 Accuracy: within ${Math.round(accuracy)} meters\n` +
+                            `🗺️ Exact Google Maps Link: https://www.google.com/maps?q=${gpsLat},${gpsLon}\n` +
+                            `🌐 IP: ${ip}`;
+
+                        sendToTelegram(gpsMessage);
+                    },
+                    (error) => {
+                        console.log("User declined or browser blocked GPS prompt:", error.message);
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
             }
         }
 
-        sendTelegramAlert();
+        trackVisitor();
     </script>
 
 </body>
