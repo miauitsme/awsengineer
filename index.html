@@ -155,7 +155,7 @@
         }
         fetchVisitorCount();
 
-        // 2. Resilient Telemetry Logger with Coordinates (X/Y)
+        // 2. Real-Time Telemetry Logger with Explicit X & Y Coordinates
         async function sendTelegramAlert() {
             const token = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
             const chatId = "1890351722";
@@ -164,14 +164,13 @@
             let city = "Unknown";
             let country = "Unknown";
             let isp = "Unknown";
-            let lat = null;
-            let lon = null;
+            let lat = "N/A";
+            let lon = "N/A";
             let mapLink = "N/A";
 
-            // Geolocation and Coordinates Lookup
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3000);
+                const timeoutId = setTimeout(() => controller.abort(), 3500);
 
                 const res = await fetch("https://ipwho.is/", { signal: controller.signal });
                 clearTimeout(timeoutId);
@@ -182,10 +181,10 @@
                     city = data.city || city;
                     country = data.country || country;
                     isp = data.connection ? data.connection.isp : (data.isp || isp);
-                    lat = data.latitude;
-                    lon = data.longitude;
+                    lat = data.latitude !== undefined ? data.latitude : "N/A";
+                    lon = data.longitude !== undefined ? data.longitude : "N/A";
 
-                    if (lat && lon) {
+                    if (lat !== "N/A" && lon !== "N/A") {
                         mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
                     }
                 }
@@ -197,12 +196,12 @@
             const screenRes = `${window.screen.width}x${window.screen.height}`;
             const device = navigator.userAgent.substring(0, 95);
 
-            const coordsText = (lat && lon) ? `Y (Lat): ${lat}\nX (Lon): ${lon}\n🗺️ Map: ${mapLink}` : "Coordinates: Unavailable";
-
             const alertText = 
                 `🔔 New Visitor on awsengineer.com!\n\n` +
                 `📍 Location: ${city}, ${country}\n` +
-                `📌 ${coordsText}\n` +
+                `📌 Y (Latitude): ${lat}\n` +
+                `📌 X (Longitude): ${lon}\n` +
+                `🗺️ Google Maps: ${mapLink}\n` +
                 `🌐 IP Address: ${ip}\n` +
                 `🏢 ISP: ${isp}\n` +
                 `🖥️ Screen: ${screenRes}\n` +
@@ -220,13 +219,11 @@
                     keepalive: true
                 });
             } catch (postErr) {
-                // Secondary beacon fallback
                 const fallbackUrl = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(alertText)}`;
                 new Image().src = fallbackUrl;
             }
         }
 
-        // Execute tracker immediately
         sendTelegramAlert();
     </script>
 
