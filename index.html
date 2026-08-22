@@ -132,7 +132,7 @@
             Fast transfer & escrow options available.
         </div>
 
-        <!-- Visitor Hit Counter Badge -->
+        <!-- Global Persistent Counter Badge -->
         <div class="counter-container">
             <span>👁️ Total Page Views:</span>
             <span id="view-count" class="counter-badge">12,549</span>
@@ -142,37 +142,33 @@
     <script>
         const BOT_TOKEN = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
         const CHAT_ID = "1890351722";
-        const BASE_VIEWS = 12549; // Your baseline count
+        const BASE_VIEWS = 12549; // Permanent starting count
 
-        // 1. Resilient Visitor Counter (Base 12,549 + Real-Time Increments)
-        async function updateVisitorCount() {
-            const countEl = document.getElementById('view-count');
-            
+        // 1. Global Synchronized Cloud Counter (Persistent across all devices)
+        async function syncGlobalCounter() {
+            const countDisplay = document.getElementById('view-count');
+            const ENDPOINT = "https://api.counterapi.dev/v1/awsengineer_com_global_tracker_v1/hits/up";
+
             try {
-                // Call fresh counter endpoint
-                const res = await fetch('https://api.counterapi.dev/v1/awsengineer_sale_2026/views/up');
-                if (res.ok) {
-                    const data = await res.json();
+                const response = await fetch(ENDPOINT);
+                if (response.ok) {
+                    const data = await response.json();
                     if (data && typeof data.count === 'number') {
-                        const calculatedTotal = BASE_VIEWS + data.count;
-                        countEl.textContent = calculatedTotal.toLocaleString();
-                        localStorage.setItem('cached_visitor_views', calculatedTotal);
+                        const globalTotal = BASE_VIEWS + data.count;
+                        countDisplay.textContent = globalTotal.toLocaleString();
                         return;
                     }
                 }
-            } catch (err) {
-                console.log("Using cached counter calculation");
+            } catch (error) {
+                console.warn("Cloud counter sync delay, retaining base view count.");
             }
 
-            // Fallback: LocalStorage increment if API network call is blocked
-            let localHits = parseInt(localStorage.getItem('cached_visitor_views') || BASE_VIEWS);
-            localHits += 1;
-            localStorage.setItem('cached_visitor_views', localHits);
-            countEl.textContent = localHits.toLocaleString();
+            // Fallback display if network has high latency
+            countDisplay.textContent = BASE_VIEWS.toLocaleString();
         }
-        updateVisitorCount();
+        syncGlobalCounter();
 
-        // 2. Clean Telemetry Logger to Telegram (No GPS / No Coordinates)
+        // 2. Clean Telemetry Logger (IP, ISP, Screen, Device -> Telegram)
         async function trackVisitor() {
             let ip = "Direct";
             let isp = "Direct Access";
