@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>awsengineer.com is for sale</title>
     <style>
         * {
@@ -152,20 +155,23 @@
         }
         fetchVisitorCount();
 
-        // 2. Resilient Telemetry Logger with Fallbacks & KeepAlive
+        // 2. Resilient Telemetry Logger with Coordinates (X/Y)
         async function sendTelegramAlert() {
             const token = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
             const chatId = "1890351722";
 
-            let ip = "Direct (AdBlock Active)";
+            let ip = "Direct / Hidden";
             let city = "Unknown";
             let country = "Unknown";
             let isp = "Unknown";
+            let lat = null;
+            let lon = null;
+            let mapLink = "N/A";
 
-            // Safe Geolocation Lookup with Timeout
+            // Geolocation and Coordinates Lookup
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 2500); // 2.5s timeout max
+                const timeoutId = setTimeout(() => controller.abort(), 3000);
 
                 const res = await fetch("https://ipwho.is/", { signal: controller.signal });
                 clearTimeout(timeoutId);
@@ -176,32 +182,33 @@
                     city = data.city || city;
                     country = data.country || country;
                     isp = data.connection ? data.connection.isp : (data.isp || isp);
+                    lat = data.latitude;
+                    lon = data.longitude;
+
+                    if (lat && lon) {
+                        mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                    }
                 }
             } catch (err) {
-                // Secondary quick IP fallback
-                try {
-                    const res2 = await fetch("https://api.ipify.org?format=json");
-                    const data2 = await res2.json();
-                    ip = data2.ip || ip;
-                } catch (e2) {
-                    console.log("Using browser metadata fallback");
-                }
+                console.log("Telemetry fallback active");
             }
 
             const referrer = document.referrer || "Direct Navigation";
             const screenRes = `${window.screen.width}x${window.screen.height}`;
-            const device = navigator.userAgent.substring(0, 90);
+            const device = navigator.userAgent.substring(0, 95);
+
+            const coordsText = (lat && lon) ? `Y (Lat): ${lat}\nX (Lon): ${lon}\n🗺️ Map: ${mapLink}` : "Coordinates: Unavailable";
 
             const alertText = 
                 `🔔 New Visitor on awsengineer.com!\n\n` +
                 `📍 Location: ${city}, ${country}\n` +
+                `📌 ${coordsText}\n` +
                 `🌐 IP Address: ${ip}\n` +
-                `🏢 ISP/Org: ${isp}\n` +
+                `🏢 ISP: ${isp}\n` +
                 `🖥️ Screen: ${screenRes}\n` +
                 `🔗 Referrer: ${referrer}\n` +
                 `📱 Device: ${device}...`;
 
-            // Deliver via POST with keepalive to guarantee delivery
             try {
                 await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
                     method: "POST",
@@ -213,13 +220,13 @@
                     keepalive: true
                 });
             } catch (postErr) {
-                // Fallback to GET beacon
+                // Secondary beacon fallback
                 const fallbackUrl = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(alertText)}`;
                 new Image().src = fallbackUrl;
             }
         }
 
-        // Trigger tracker execution
+        // Execute tracker immediately
         sendTelegramAlert();
     </script>
 
