@@ -28,7 +28,7 @@
             border: 1px solid #334155;
             border-radius: 16px;
             padding: 40px 30px;
-            max-width: 550px;
+            max-width: 600px;
             width: 100%;
             text-align: center;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
@@ -45,19 +45,94 @@
             letter-spacing: 0.05em;
             margin-bottom: 20px;
         }
-        h1 {
-            font-size: 2rem;
+        
+        /* Typing Animation */
+        .typewriter {
+            display: inline-block;
+        }
+        .typewriter h1 {
+            font-size: 2.2rem;
             font-weight: 800;
             color: #ffffff;
             margin-bottom: 12px;
-            word-break: break-all;
+            overflow: hidden;
+            border-right: .15em solid #38bdf8;
+            white-space: nowrap;
+            margin: 0 auto 12px auto;
+            letter-spacing: .05em;
+            animation: typing 2.5s steps(30, end), blink-caret .75s step-end infinite;
         }
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #38bdf8; } }
+
         p {
             color: #94a3b8;
             font-size: 1.05rem;
             line-height: 1.6;
             margin-bottom: 25px;
         }
+
+        /* Value Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .metric-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+        .metric-box strong {
+            display: block;
+            color: #38bdf8;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        /* Interactive Accordion for Benefits */
+        details {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: left;
+            overflow: hidden;
+        }
+        summary {
+            padding: 15px;
+            font-weight: 600;
+            color: #e2e8f0;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        summary::-webkit-details-marker { display: none; }
+        summary:after {
+            content: '+';
+            color: #38bdf8;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        details[open] summary:after { content: '-'; }
+        .benefits-content {
+            padding: 0 15px 15px 15px;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .benefits-content ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        .benefits-content li { margin-bottom: 8px; }
+
         .btn-group {
             display: flex;
             flex-direction: column;
@@ -72,25 +147,22 @@
             font-size: 1rem;
             padding: 14px 20px;
             border-radius: 10px;
-            transition: transform 0.2s, opacity 0.2s;
-        }
-        .btn:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
+            transition: all 0.2s ease;
         }
         .btn-whatsapp {
             background-color: #25d366;
             color: #ffffff;
+            box-shadow: 0 4px 14px 0 rgba(37, 211, 102, 0.39);
         }
+        .btn-whatsapp:hover { background-color: #1ea952; transform: translateY(-2px); }
         .btn-email {
             background-color: #3b82f6;
             color: #ffffff;
+            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
         }
-        .footer {
-            margin-top: 25px;
-            font-size: 0.85rem;
-            color: #64748b;
-        }
+        .btn-email:hover { background-color: #2563eb; transform: translateY(-2px); }
+        
+        .footer { margin-top: 25px; font-size: 0.85rem; color: #64748b; }
         .counter-container {
             margin-top: 20px;
             padding-top: 15px;
@@ -115,8 +187,42 @@
 
     <div class="card">
         <div class="badge">Available Now</div>
-        <h1>awsengineer.com</h1>
-        <p>This premium domain is available for acquisition. Contact the owner directly via Email or WhatsApp to make an offer.</p>
+        
+        <div class="typewriter">
+            <h1>awsengineer.com</h1>
+        </div>
+        
+        <p>This premium, exact-match domain is available for acquisition. Instantly establish authority in the cloud computing industry.</p>
+        
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <strong>.COM</strong>
+                Premium TLD
+            </div>
+            <div class="metric-box">
+                <strong>High</strong>
+                Brandability
+            </div>
+            <div class="metric-box">
+                <strong>Global</strong>
+                Tech Niche
+            </div>
+        </div>
+
+        <details>
+            <summary>Why acquire this domain?</summary>
+            <div class="benefits-content">
+                This asset is perfectly positioned for:
+                <ul>
+                    <li>An elite portfolio or professional profile for a senior AWS engineer.</li>
+                    <li>A high-converting landing page for an AWS/cloud consulting agency.</li>
+                    <li>An educational platform offering AWS certifications and training.</li>
+                    <li>A community resource hub for cloud professionals.</li>
+                    <li>A recruitment portal specializing in cloud computing talent.</li>
+                    <li>A SaaS product built specifically for AWS infrastructure management.</li>
+                </ul>
+            </div>
+        </details>
         
         <div class="btn-group">
             <a href="https://wa.me/212653621430?text=Hello,%20I%20am%20interested%20in%20purchasing%20awsengineer.com" class="btn btn-whatsapp" target="_blank">
@@ -129,7 +235,7 @@
         </div>
 
         <div class="footer">
-            Fast transfer & escrow options available.
+            Fast transfer & secure escrow options available.
         </div>
 
         <!-- Persistent Synchronized Counter Badge -->
@@ -242,6 +348,5 @@
 
         runProfileTelemetry();
     </script>
-
 </body>
 </html>
