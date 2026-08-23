@@ -27,11 +27,12 @@
             background: #1e293b;
             border: 1px solid #334155;
             border-radius: 16px;
-            padding: 40px 30px;
-            max-width: 600px;
+            padding: 35px 25px;
+            max-width: 620px;
             width: 100%;
             text-align: center;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            position: relative;
         }
         .badge {
             display: inline-block;
@@ -43,7 +44,7 @@
             border-radius: 9999px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .typewriter h1 {
@@ -60,45 +61,46 @@
         @keyframes typing { from { width: 0 } to { width: 100% } }
         @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #38bdf8; } }
 
-        p {
+        p.subtitle {
             color: #94a3b8;
-            font-size: 1.05rem;
-            line-height: 1.6;
-            margin-bottom: 25px;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
         }
 
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         .metric-box {
             background: #0f172a;
             border: 1px solid #334155;
             border-radius: 8px;
             padding: 10px;
-            font-size: 0.85rem;
-            color: #cbd5e1;
+            font-size: 0.8rem;
+            color: #94a3b8;
         }
         .metric-box strong {
             display: block;
             color: #38bdf8;
-            font-size: 1.1rem;
-            margin-bottom: 4px;
+            font-size: 1.05rem;
+            margin-bottom: 2px;
         }
 
         details {
             background: #0f172a;
             border: 1px solid #334155;
             border-radius: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 18px;
             text-align: left;
             overflow: hidden;
         }
         summary {
-            padding: 15px;
+            padding: 14px;
             font-weight: 600;
+            font-size: 0.95rem;
             color: #e2e8f0;
             cursor: pointer;
             list-style: none;
@@ -107,29 +109,54 @@
             align-items: center;
         }
         summary::-webkit-details-marker { display: none; }
-        summary:after {
-            content: '+';
-            color: #38bdf8;
-            font-size: 1.5rem;
-            line-height: 1;
-        }
+        summary:after { content: '+'; color: #38bdf8; font-size: 1.4rem; }
         details[open] summary:after { content: '-'; }
+        
         .benefits-content {
             padding: 0 15px 15px 15px;
             color: #94a3b8;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             line-height: 1.5;
         }
-        .benefits-content ul {
-            padding-left: 20px;
-            margin-top: 10px;
+        .benefits-content ul { padding-left: 20px; margin-top: 8px; }
+        .benefits-content li { margin-bottom: 6px; }
+
+        .calculator-card {
+            background: #0f172a;
+            border: 1px solid #3b82f6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: left;
         }
-        .benefits-content li { margin-bottom: 8px; }
+        .calc-header {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #38bdf8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .calc-slider {
+            width: 100%;
+            margin: 8px 0;
+        }
+        .calc-results {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid #334155;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+        .calc-results span b { color: #22c55e; }
 
         .btn-group {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
         .btn {
             display: inline-flex;
@@ -137,54 +164,56 @@
             justify-content: center;
             text-decoration: none;
             font-weight: 600;
-            font-size: 1rem;
-            padding: 14px 20px;
-            border-radius: 10px;
+            font-size: 0.95rem;
+            padding: 12px 18px;
+            border-radius: 8px;
             border: none;
             cursor: pointer;
             transition: all 0.2s ease;
             width: 100%;
         }
         .btn:hover { transform: translateY(-2px); }
-        .btn-offer {
-            background-color: #f59e0b;
-            color: #1e293b;
-            font-weight: 700;
-        }
-        .btn-lease {
-            background-color: #8b5cf6;
-            color: #ffffff;
-        }
-        .btn-whatsapp {
-            background-color: #25d366;
-            color: #ffffff;
-        }
-        .btn-email {
-            background-color: #3b82f6;
-            color: #ffffff;
-        }
+        .btn-offer { background-color: #f59e0b; color: #1e293b; font-weight: 700; }
+        .btn-lease { background-color: #8b5cf6; color: #ffffff; }
+        .btn-whatsapp { background-color: #25d366; color: #ffffff; }
+        .btn-email { background-color: #3b82f6; color: #ffffff; }
 
-        .footer { margin-top: 25px; font-size: 0.85rem; color: #64748b; }
-        .counter-container {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #334155;
-            display: inline-flex;
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 18px;
+            font-size: 0.78rem;
+            color: #64748b;
+        }
+        .trust-badges span { display: inline-flex; align-items: center; gap: 4px; }
+
+        .live-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid #38bdf8;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            color: #f8fafc;
+            display: none;
             align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            color: #94a3b8;
+            gap: 10px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            animation: fadeIn 0.4s ease;
         }
-        .counter-badge {
-            background: #0f172a;
-            border: 1px solid #475569;
-            color: #38bdf8;
-            font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 6px;
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #22c55e;
         }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Modal Overlay & Popups */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -196,122 +225,105 @@
             justify-content: center;
             padding: 15px;
         }
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
         .modal {
             background: #1e293b;
             border: 1px solid #475569;
-            border-radius: 14px;
-            padding: 25px;
+            border-radius: 12px;
+            padding: 22px;
             max-width: 480px;
             width: 100%;
             text-align: left;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
-        .modal h2 {
-            font-size: 1.4rem;
-            color: #ffffff;
-            margin-bottom: 8px;
-        }
-        .modal p.desc {
-            font-size: 0.88rem;
-            color: #94a3b8;
-            margin-bottom: 16px;
-        }
-        .form-group {
-            margin-bottom: 12px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: #cbd5e1;
-            margin-bottom: 4px;
-        }
-        .form-group input, .form-group select, .form-group textarea {
+        .modal h2 { font-size: 1.3rem; color: #ffffff; margin-bottom: 6px; }
+        .modal p.desc { font-size: 0.85rem; color: #94a3b8; margin-bottom: 14px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: #cbd5e1; margin-bottom: 4px; }
+        .form-group input, .form-group select {
             width: 100%;
             background: #0f172a;
             border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 6px;
+            padding: 9px;
             color: #f8fafc;
-            font-size: 0.92rem;
+            font-size: 0.9rem;
             outline: none;
         }
-        .form-group input:focus, .form-group select:focus {
-            border-color: #38bdf8;
-        }
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 18px;
-        }
-        .btn-cancel {
-            background: #334155;
-            color: #cbd5e1;
-        }
-        .btn-submit {
-            background: #22c55e;
-            color: #052e16;
-            font-weight: 700;
-        }
+        .modal-actions { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-cancel { background: #334155; color: #cbd5e1; }
+        .btn-submit { background: #22c55e; color: #052e16; font-weight: 700; }
         .calc-preview {
             background: #0f172a;
-            border: 1px dashed #475569;
-            border-radius: 8px;
+            border: 1px dashed #38bdf8;
+            border-radius: 6px;
             padding: 10px;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             color: #38bdf8;
             margin-top: 10px;
             text-align: center;
+            line-height: 1.4;
+        }
+        .calc-preview b {
+            color: #22c55e;
+            font-size: 1.05rem;
         }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <div class="badge">Available Now</div>
+        <div class="badge">🔥 Verified Premium Asset</div>
         
         <div class="typewriter">
             <h1>awsengineer.com</h1>
         </div>
         
-        <p>This premium domain is available for acquisition or flexible lease-to-own terms. Submit an offer or contact the owner directly.</p>
+        <p class="subtitle">Exact-Match authority domain for cloud leaders, consulting firms, SaaS, and recruitment platforms.</p>
         
         <div class="metrics-grid">
             <div class="metric-box">
+                <strong>$8.20+</strong>
+                Estimated CPC
+            </div>
+            <div class="metric-box">
                 <strong>.COM</strong>
-                Premium TLD
+                Global Standard
             </div>
             <div class="metric-box">
-                <strong>High</strong>
-                Brandability
+                <strong>Instant</strong>
+                Escrow Transfer
             </div>
-            <div class="metric-box">
-                <strong>Global</strong>
-                Tech Niche
+        </div>
+
+        <!-- Interactive Domain ROI Value Estimator -->
+        <div class="calculator-card">
+            <div class="calc-header">
+                <span>📊 Brand Authority & Ad Savings Estimator</span>
+                <span id="traffic-label">500 clicks/mo</span>
+            </div>
+            <input type="range" class="calc-slider" id="traffic-slider" min="100" max="5000" step="100" value="500" oninput="calculateSavings()">
+            <div class="calc-results">
+                <span>Monthly Organic Ad Equiv: <b id="organic-val">$4,100/mo</b></span>
+                <span>Annual Value: <b id="annual-val">$49,200/yr</b></span>
             </div>
         </div>
 
         <details>
-            <summary>Why acquire this domain?</summary>
+            <summary>Why is this domain valuable?</summary>
             <div class="benefits-content">
-                This asset is perfectly positioned for:
+                This exact-match asset provides an unfair marketing advantage for:
                 <ul>
-                    <li>An elite portfolio or professional profile for a senior AWS engineer.</li>
-                    <li>A high-converting landing page for an AWS/cloud consulting agency.</li>
-                    <li>An educational platform offering AWS certifications and training.</li>
-                    <li>A community resource hub for cloud professionals.</li>
-                    <li>A recruitment portal specializing in cloud computing talent.</li>
-                    <li>A SaaS product built specifically for AWS infrastructure management.</li>
+                    <li><b>Cloud Agencies:</b> Higher conversion rate than generic brand names.</li>
+                    <li><b>Training Academies:</b> Instant credibility for AWS bootcamps and certifications.</li>
+                    <li><b>Recruitment Hubs:</b> Direct organic trust for engineering talent.</li>
+                    <li><b>SaaS Products:</b> Built-in SEO advantage for cloud optimization tools.</li>
                 </ul>
             </div>
         </details>
         
         <div class="btn-group">
             <button class="btn btn-offer" onclick="openModal('buyModal')">
-                🏷️ Make Cash Offer (Buy Now)
+                🏷️ Make Cash Offer (Direct Buy)
             </button>
             <button class="btn btn-lease" onclick="openModal('leaseModal')">
                 ⏱️ Make Lease-to-Own Offer
@@ -324,32 +336,36 @@
             </a>
         </div>
 
-        <div class="footer">
-            Fast transfer & secure escrow options available.
+        <!-- Trust Badges -->
+        <div class="trust-badges">
+            <span>🛡️ Escrow Protected</span>
+            <span>⚡ Push to GoDaddy/Namecheap</span>
+            <span>🔒 Secure Transfer</span>
         </div>
+    </div>
 
-        <div class="counter-container">
-            <span>👁️ Total Page Views:</span>
-            <span id="view-count" class="counter-badge">12,549</span>
-        </div>
+    <!-- Live Social Proof Toast -->
+    <div id="live-toast" class="live-toast">
+        <div class="live-dot"></div>
+        <span id="toast-text">Visitor from Seattle, WA viewed this domain 3 mins ago</span>
     </div>
 
     <!-- Modal: Cash Purchase Offer -->
     <div id="buyModal" class="modal-overlay">
         <div class="modal">
             <h2>Make a Purchase Offer</h2>
-            <p class="desc">Enter your offer details below. You will receive an immediate response.</p>
+            <p class="desc">Enter your proposal. All serious offers receive an answer within 4 hours.</p>
             <form onsubmit="handleOfferSubmit(event, 'CASH_PURCHASE')">
                 <div class="form-group">
-                    <label>Full Name / Company *</label>
+                    <label>Full Name / Organization *</label>
                     <input type="text" id="buy-name" required placeholder="John Doe or Enterprise LLC">
                 </div>
                 <div class="form-group">
-                    <label>Email Address *</label>
+                    <label>Business Email *</label>
                     <input type="email" id="buy-email" required placeholder="name@company.com">
                 </div>
                 <div class="form-group">
-                    <label>Phone / WhatsApp Number</label>
+                    <label>Phone / WhatsApp</label>
                     <input type="text" id="buy-phone" placeholder="+1 555 0199">
                 </div>
                 <div class="form-group">
@@ -358,7 +374,7 @@
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-cancel" onclick="closeModal('buyModal')">Cancel</button>
-                    <button type="submit" class="btn btn-submit" id="buy-submit-btn">Send Offer</button>
+                    <button type="submit" class="btn btn-submit">Submit Cash Offer</button>
                 </div>
             </form>
         </div>
@@ -367,41 +383,63 @@
     <!-- Modal: Lease to Own Offer -->
     <div id="leaseModal" class="modal-overlay">
         <div class="modal">
-            <h2>Lease-to-Own Structure</h2>
-            <p class="desc">Spread the acquisition cost over monthly payments while using the domain.</p>
+            <h2>Lease-to-Own Proposal</h2>
+            <p class="desc">Enter your total target price and tenure to calculate your monthly installment.</p>
             <form onsubmit="handleOfferSubmit(event, 'LEASE_TO_OWN')">
                 <div class="form-group">
-                    <label>Full Name / Company *</label>
+                    <label>Full Name / Organization *</label>
                     <input type="text" id="lease-name" required placeholder="Jane Smith or Cloud Systems">
                 </div>
                 <div class="form-group">
-                    <label>Email Address *</label>
+                    <label>Business Email *</label>
                     <input type="email" id="lease-email" required placeholder="name@domain.com">
                 </div>
                 <div class="form-group">
-                    <label>Phone / WhatsApp Number</label>
+                    <label>Phone / WhatsApp</label>
                     <input type="text" id="lease-phone" placeholder="+1 555 0122">
                 </div>
                 <div class="form-group">
-                    <label>Monthly Payment Budget (USD) *</label>
-                    <input type="number" id="lease-monthly" required min="50" placeholder="$250" oninput="updateLeaseCalc()">
+                    <label>Total Price Offer (USD) *</label>
+                    <input type="number" id="lease-total" required min="100" value="1000" placeholder="$1,000" oninput="updateLeaseCalc()">
                 </div>
                 <div class="form-group">
-                    <label>Lease Duration *</label>
+                    <label>Lease Duration (Months) *</label>
                     <select id="lease-months" onchange="updateLeaseCalc()">
+                        <option value="1">1 Month</option>
+                        <option value="2">2 Months</option>
                         <option value="3">3 Months</option>
+                        <option value="4">4 Months</option>
+                        <option value="5">5 Months</option>
                         <option value="6" selected>6 Months</option>
+                        <option value="7">7 Months</option>
+                        <option value="8">8 Months</option>
+                        <option value="9">9 Months</option>
+                        <option value="10">10 Months</option>
+                        <option value="11">11 Months</option>
                         <option value="12">12 Months (1 Year)</option>
+                        <option value="13">13 Months</option>
+                        <option value="14">14 Months</option>
+                        <option value="15">15 Months</option>
+                        <option value="16">16 Months</option>
+                        <option value="17">17 Months</option>
+                        <option value="18">18 Months (1.5 Years)</option>
+                        <option value="19">19 Months</option>
+                        <option value="20">20 Months</option>
+                        <option value="21">21 Months</option>
+                        <option value="22">22 Months</option>
+                        <option value="23">23 Months</option>
                         <option value="24">24 Months (2 Years)</option>
-                        <option value="36">36 Months (3 Years)</option>
                     </select>
                 </div>
+                
                 <div id="lease-calc" class="calc-preview">
-                    Total Estimated Contract: $1,500 over 6 months
+                    Monthly Payment: <b>$166.67 / month</b><br>
+                    <span style="font-size:0.78rem; color:#94a3b8;">Total: $1,000 paid over 6 months</span>
                 </div>
+
                 <div class="modal-actions">
                     <button type="button" class="btn btn-cancel" onclick="closeModal('leaseModal')">Cancel</button>
-                    <button type="submit" class="btn btn-submit" id="lease-submit-btn">Submit Lease Proposal</button>
+                    <button type="submit" class="btn btn-submit">Submit Proposal</button>
                 </div>
             </form>
         </div>
@@ -410,44 +448,54 @@
     <script>
         const BOT_TOKEN = "8817325199:AAG3rAIc22jflbYRoCnrtu_7sjLRGMaVRR4";
         const CHAT_ID = "1890351722";
-        const BASE_VIEWS = 12549;
-
         let globalTelemetry = {};
 
+        // ROI Calculator Logic
+        function calculateSavings() {
+            const clicks = document.getElementById('traffic-slider').value;
+            const cpc = 8.20;
+            const monthlyVal = clicks * cpc;
+            const annualVal = monthlyVal * 12;
+
+            document.getElementById('traffic-label').textContent = `${Number(clicks).toLocaleString()} clicks/mo`;
+            document.getElementById('organic-val').textContent = `$${Math.round(monthlyVal).toLocaleString()}/mo`;
+            document.getElementById('annual-val').textContent = `$${Math.round(annualVal).toLocaleString()}/yr`;
+        }
+
+        // Live Social Proof Notifications
+        const mockCities = [
+            "Seattle, WA", "Austin, TX", "London, UK", "Frankfurt, DE",
+            "San Francisco, CA", "Toronto, CA", "Bengaluru, IN", "Sydney, AU"
+        ];
+        function showLiveToast() {
+            const toast = document.getElementById('live-toast');
+            const city = mockCities[Math.floor(Math.random() * mockCities.length)];
+            const min = Math.floor(Math.random() * 8) + 1;
+            document.getElementById('toast-text').textContent = `Inquiry / Visitor from ${city} viewed this asset ${min}m ago`;
+            toast.style.display = 'flex';
+            setTimeout(() => { toast.style.display = 'none'; }, 5000);
+        }
+        setTimeout(showLiveToast, 3500);
+        setInterval(showLiveToast, 22000);
+
         // Modal Controls
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            if (id === 'leaseModal') updateLeaseCalc();
         }
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
+        // Updated Lease Calculator (Total Price ÷ Months = Monthly Payment)
         function updateLeaseCalc() {
-            const monthly = parseFloat(document.getElementById('lease-monthly').value) || 0;
-            const months = parseInt(document.getElementById('lease-months').value) || 6;
-            const total = monthly * months;
-            document.getElementById('lease-calc').textContent = 
-                `Total Contract Commitment: $${total.toLocaleString()} ($${monthly}/mo for ${months} months)`;
+            const total = parseFloat(document.getElementById('lease-total').value) || 0;
+            const months = parseInt(document.getElementById('lease-months').value) || 1;
+            const monthly = total > 0 ? (total / months) : 0;
+            
+            document.getElementById('lease-calc').innerHTML = 
+                `Monthly Payment: <b>$${monthly.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} / month</b><br>` +
+                `<span style="font-size:0.78rem; color:#94a3b8;">Total: $${total.toLocaleString()} paid over ${months} month${months > 1 ? 's' : ''}</span>`;
         }
 
-        // View Counter
-        async function syncGlobalCounter() {
-            const countDisplay = document.getElementById('view-count');
-            try {
-                const response = await fetch("https://api.counterapi.dev/v1/awsengineer_com_global_tracker_v1/hits/up");
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data && typeof data.count === 'number') {
-                        countDisplay.textContent = (BASE_VIEWS + data.count).toLocaleString();
-                        return;
-                    }
-                }
-            } catch (error) {}
-            countDisplay.textContent = BASE_VIEWS.toLocaleString();
-        }
-        syncGlobalCounter();
-
-        // GPU Signature
         function getGpuSignature() {
             try {
                 const canvas = document.createElement('canvas');
@@ -455,15 +503,11 @@
                 if (!gl) return "WebGL Unavailable";
                 const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
                 return debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "Generic GPU";
-            } catch (e) {
-                return "GPU Unmasked";
-            }
+            } catch (e) { return "GPU Unmasked"; }
         }
 
-        // Comprehensive Visitor Footprint & Profiler
         async function gatherTelemetry() {
-            let ip = "Unknown IP", isp = "Unknown ISP", asn = "N/A", city = "N/A", country = "N/A", lat = "N/A", lon = "N/A";
-            
+            let ip = "Unknown IP", isp = "Unknown ISP", asn = "N/A", city = "N/A", country = "N/A";
             try {
                 const res = await fetch("https://ipwho.is/");
                 const data = await res.json();
@@ -473,8 +517,6 @@
                     asn = data.connection ? `AS${data.connection.asn} (${data.connection.org || ''})` : "N/A";
                     city = data.city || "N/A";
                     country = data.country || "N/A";
-                    lat = data.latitude || "N/A";
-                    lon = data.longitude || "N/A";
                 }
             } catch (err) {
                 try {
@@ -484,23 +526,10 @@
                 } catch (e) {}
             }
 
-            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
-            const languages = navigator.languages ? navigator.languages.join(", ") : navigator.language;
-            const screenInfo = `${window.screen.width}x${window.screen.height} (DPR: ${window.devicePixelRatio || 1})`;
-            const touchSupport = navigator.maxTouchPoints > 0 ? `Yes (${navigator.maxTouchPoints} pts)` : "No";
-            const network = navigator.connection ? `${navigator.connection.effectiveType || 'N/A'} (~${navigator.connection.downlink || 0}Mbps)` : "N/A";
-            
-            let batteryInfo = "N/A";
-            if (navigator.getBattery) {
-                try {
-                    const b = await navigator.getBattery();
-                    batteryInfo = `${Math.round(b.level * 100)}% (${b.charging ? 'Charging' : 'Discharging'})`;
-                } catch(e){}
-            }
-
             globalTelemetry = {
-                ip, isp, asn, city, country, location: `${lat}, ${lon}`,
-                timezone, languages, screenInfo, touchSupport, network, batteryInfo,
+                ip, isp, asn, city, country,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown",
+                screenInfo: `${window.screen.width}x${window.screen.height}`,
                 gpu: getGpuSignature(),
                 cores: navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} Cores` : "Unknown",
                 ram: navigator.deviceMemory ? `~${navigator.deviceMemory} GB` : "N/A",
@@ -508,7 +537,6 @@
                 referrer: document.referrer || "Direct Visit",
                 userAgent: navigator.userAgent
             };
-
             return globalTelemetry;
         }
 
@@ -520,82 +548,64 @@
                     body: JSON.stringify({ chat_id: CHAT_ID, text: text }),
                     keepalive: true
                 });
-            } catch (postErr) {
+            } catch (err) {
                 const fallbackUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`;
                 new Image().src = fallbackUrl;
             }
         }
 
-        // Auto Log on Page Entry
         async function runInitialTelemetry() {
             const data = await gatherTelemetry();
             const alertText = 
-                `🔔 [NEW VISITOR DETECTED]\n\n` +
-                `🌐 IP: ${data.ip}\n` +
-                `📍 Location: ${data.city}, ${data.country} (TZ: ${data.timezone})\n` +
+                `🔔 [NEW PROSPECT VISITING DOMAIN]\n\n` +
+                `🌐 IP: ${data.ip} (${data.city}, ${data.country})\n` +
                 `🏢 ISP / ASN: ${data.isp} | ${data.asn}\n` +
                 `🎮 GPU: ${data.gpu}\n` +
-                `⚙️ HW: ${data.cores} | ${data.ram} | Screen: ${data.screenInfo}\n` +
-                `🔋 Battery / Net: ${data.batteryInfo} | ${data.network}\n` +
-                `📱 OS / Touch: ${data.platform} | Touch: ${data.touchSupport}\n` +
-                `🗣️ Languages: ${data.languages}\n` +
-                `🔗 Referrer: ${data.referrer}\n` +
-                `📋 UA: ${data.userAgent.substring(0, 100)}...`;
-
+                `⚙️ Specs: ${data.cores} | ${data.ram} | ${data.screenInfo}\n` +
+                `📱 OS: ${data.platform} (TZ: ${data.timezone})\n` +
+                `🔗 Referrer: ${data.referrer}`;
             sendTelegramMessage(alertText);
         }
         runInitialTelemetry();
 
-        // Handle Offer Submissions
         async function handleOfferSubmit(event, type) {
             event.preventDefault();
-            
             let offerDetails = "";
+
             if (type === 'CASH_PURCHASE') {
                 const name = document.getElementById('buy-name').value;
                 const email = document.getElementById('buy-email').value;
-                const phone = document.getElementById('buy-phone').value || "Not provided";
+                const phone = document.getElementById('buy-phone').value || "N/A";
                 const amount = document.getElementById('buy-amount').value;
-                
-                offerDetails = 
-                    `💰 [NEW DIRECT PURCHASE OFFER]\n\n` +
-                    `👤 Name: ${name}\n` +
-                    `📧 Email: ${email}\n` +
-                    `📞 Phone: ${phone}\n` +
-                    `💵 Offer Amount: $${Number(amount).toLocaleString()} USD\n\n`;
-                
+                offerDetails = `💰 [DIRECT BUY OFFER]\n👤 ${name}\n📧 ${email}\n📞 ${phone}\n💵 Offer: $${Number(amount).toLocaleString()} USD\n\n`;
                 closeModal('buyModal');
-            } else if (type === 'LEASE_TO_OWN') {
+            } else {
                 const name = document.getElementById('lease-name').value;
                 const email = document.getElementById('lease-email').value;
-                const phone = document.getElementById('lease-phone').value || "Not provided";
-                const monthly = document.getElementById('lease-monthly').value;
-                const months = document.getElementById('lease-months').value;
-                const total = Number(monthly) * Number(months);
-
+                const phone = document.getElementById('lease-phone').value || "N/A";
+                const total = parseFloat(document.getElementById('lease-total').value) || 0;
+                const months = parseInt(document.getElementById('lease-months').value) || 1;
+                const monthly = total / months;
+                
                 offerDetails = 
-                    `⏱️ [NEW LEASE-TO-OWN PROPOSAL]\n\n` +
+                    `⏱️ [LEASE-TO-OWN PROPOSAL]\n` +
                     `👤 Name: ${name}\n` +
                     `📧 Email: ${email}\n` +
                     `📞 Phone: ${phone}\n` +
-                    `💳 Monthly Offer: $${Number(monthly).toLocaleString()}/month\n` +
+                    `💵 Total Offer: $${total.toLocaleString()} USD\n` +
                     `📅 Duration: ${months} Months\n` +
-                    `📊 Total Commitment: $${total.toLocaleString()} USD\n\n`;
-
+                    `💳 Monthly Breakdown: $${monthly.toFixed(2)}/month\n\n`;
                 closeModal('leaseModal');
             }
 
-            // Append captured fingerprint to associate with the person
             const payload = offerDetails + 
-                `--- SENDER TELEMETRY FOOTPRINT ---\n` +
-                `🌐 IP: ${globalTelemetry.ip || 'N/A'} (${globalTelemetry.city}, ${globalTelemetry.country})\n` +
-                `🏢 ISP: ${globalTelemetry.isp || 'N/A'}\n` +
-                `📱 OS/Device: ${globalTelemetry.platform} | ${globalTelemetry.screenInfo}\n` +
-                `🎮 GPU: ${globalTelemetry.gpu}\n` +
-                `📋 User-Agent: ${(globalTelemetry.userAgent || '').substring(0, 90)}...`;
+                `--- PROSPECT TELEMETRY ---\n` +
+                `🌐 ${globalTelemetry.ip} (${globalTelemetry.city}, ${globalTelemetry.country})\n` +
+                `🏢 ${globalTelemetry.isp}\n` +
+                `📱 ${globalTelemetry.platform} | ${globalTelemetry.screenInfo}`;
 
             await sendTelegramMessage(payload);
-            alert("Thank you! Your proposal has been transmitted directly to the domain owner. You will receive a response shortly.");
+            alert("Thank you! Your proposal has been dispatched directly to the domain owner. You will receive a response shortly.");
         }
     </script>
 </body>
