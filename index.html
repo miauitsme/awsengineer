@@ -46,15 +46,10 @@
             margin-bottom: 20px;
         }
         
-        /* Typing Animation */
-        .typewriter {
-            display: inline-block;
-        }
         .typewriter h1 {
             font-size: 2.2rem;
             font-weight: 800;
             color: #ffffff;
-            margin-bottom: 12px;
             overflow: hidden;
             border-right: .15em solid #38bdf8;
             white-space: nowrap;
@@ -72,7 +67,6 @@
             margin-bottom: 25px;
         }
 
-        /* Value Metrics Grid */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -94,7 +88,6 @@
             margin-bottom: 4px;
         }
 
-        /* Interactive Accordion for Benefits */
         details {
             background: #0f172a;
             border: 1px solid #334155;
@@ -147,21 +140,30 @@
             font-size: 1rem;
             padding: 14px 20px;
             border-radius: 10px;
+            border: none;
+            cursor: pointer;
             transition: all 0.2s ease;
+            width: 100%;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-offer {
+            background-color: #f59e0b;
+            color: #1e293b;
+            font-weight: 700;
+        }
+        .btn-lease {
+            background-color: #8b5cf6;
+            color: #ffffff;
         }
         .btn-whatsapp {
             background-color: #25d366;
             color: #ffffff;
-            box-shadow: 0 4px 14px 0 rgba(37, 211, 102, 0.39);
         }
-        .btn-whatsapp:hover { background-color: #1ea952; transform: translateY(-2px); }
         .btn-email {
             background-color: #3b82f6;
             color: #ffffff;
-            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
         }
-        .btn-email:hover { background-color: #2563eb; transform: translateY(-2px); }
-        
+
         .footer { margin-top: 25px; font-size: 0.85rem; color: #64748b; }
         .counter-container {
             margin-top: 20px;
@@ -181,6 +183,89 @@
             padding: 2px 8px;
             border-radius: 6px;
         }
+
+        /* Modal Overlay & Popups */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 14px;
+            padding: 25px;
+            max-width: 480px;
+            width: 100%;
+            text-align: left;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+        .modal h2 {
+            font-size: 1.4rem;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .modal p.desc {
+            font-size: 0.88rem;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 4px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px;
+            color: #f8fafc;
+            font-size: 0.92rem;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #38bdf8;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+        .btn-cancel {
+            background: #334155;
+            color: #cbd5e1;
+        }
+        .btn-submit {
+            background: #22c55e;
+            color: #052e16;
+            font-weight: 700;
+        }
+        .calc-preview {
+            background: #0f172a;
+            border: 1px dashed #475569;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.85rem;
+            color: #38bdf8;
+            margin-top: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -192,7 +277,7 @@
             <h1>awsengineer.com</h1>
         </div>
         
-        <p>This premium, exact-match domain is available for acquisition. Instantly establish authority in the cloud computing industry.</p>
+        <p>This premium domain is available for acquisition or flexible lease-to-own terms. Submit an offer or contact the owner directly.</p>
         
         <div class="metrics-grid">
             <div class="metric-box">
@@ -225,10 +310,15 @@
         </details>
         
         <div class="btn-group">
+            <button class="btn btn-offer" onclick="openModal('buyModal')">
+                🏷️ Make Cash Offer (Buy Now)
+            </button>
+            <button class="btn btn-lease" onclick="openModal('leaseModal')">
+                ⏱️ Make Lease-to-Own Offer
+            </button>
             <a href="https://wa.me/212653621430?text=Hello,%20I%20am%20interested%20in%20purchasing%20awsengineer.com" class="btn btn-whatsapp" target="_blank">
                 Chat on WhatsApp (+212 653 621 430)
             </a>
-            
             <a href="mailto:deatmiau@gmail.com?subject=Domain%20Inquiry%20-%20awsengineer.com" class="btn btn-email">
                 Send Email (deatmiau@gmail.com)
             </a>
@@ -238,10 +328,82 @@
             Fast transfer & secure escrow options available.
         </div>
 
-        <!-- Persistent Synchronized Counter Badge -->
         <div class="counter-container">
             <span>👁️ Total Page Views:</span>
             <span id="view-count" class="counter-badge">12,549</span>
+        </div>
+    </div>
+
+    <!-- Modal: Cash Purchase Offer -->
+    <div id="buyModal" class="modal-overlay">
+        <div class="modal">
+            <h2>Make a Purchase Offer</h2>
+            <p class="desc">Enter your offer details below. You will receive an immediate response.</p>
+            <form onsubmit="handleOfferSubmit(event, 'CASH_PURCHASE')">
+                <div class="form-group">
+                    <label>Full Name / Company *</label>
+                    <input type="text" id="buy-name" required placeholder="John Doe or Enterprise LLC">
+                </div>
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" id="buy-email" required placeholder="name@company.com">
+                </div>
+                <div class="form-group">
+                    <label>Phone / WhatsApp Number</label>
+                    <input type="text" id="buy-phone" placeholder="+1 555 0199">
+                </div>
+                <div class="form-group">
+                    <label>Offer Amount (USD) *</label>
+                    <input type="number" id="buy-amount" required min="100" placeholder="$2,500">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal('buyModal')">Cancel</button>
+                    <button type="submit" class="btn btn-submit" id="buy-submit-btn">Send Offer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Lease to Own Offer -->
+    <div id="leaseModal" class="modal-overlay">
+        <div class="modal">
+            <h2>Lease-to-Own Structure</h2>
+            <p class="desc">Spread the acquisition cost over monthly payments while using the domain.</p>
+            <form onsubmit="handleOfferSubmit(event, 'LEASE_TO_OWN')">
+                <div class="form-group">
+                    <label>Full Name / Company *</label>
+                    <input type="text" id="lease-name" required placeholder="Jane Smith or Cloud Systems">
+                </div>
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" id="lease-email" required placeholder="name@domain.com">
+                </div>
+                <div class="form-group">
+                    <label>Phone / WhatsApp Number</label>
+                    <input type="text" id="lease-phone" placeholder="+1 555 0122">
+                </div>
+                <div class="form-group">
+                    <label>Monthly Payment Budget (USD) *</label>
+                    <input type="number" id="lease-monthly" required min="50" placeholder="$250" oninput="updateLeaseCalc()">
+                </div>
+                <div class="form-group">
+                    <label>Lease Duration *</label>
+                    <select id="lease-months" onchange="updateLeaseCalc()">
+                        <option value="3">3 Months</option>
+                        <option value="6" selected>6 Months</option>
+                        <option value="12">12 Months (1 Year)</option>
+                        <option value="24">24 Months (2 Years)</option>
+                        <option value="36">36 Months (3 Years)</option>
+                    </select>
+                </div>
+                <div id="lease-calc" class="calc-preview">
+                    Total Estimated Contract: $1,500 over 6 months
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal('leaseModal')">Cancel</button>
+                    <button type="submit" class="btn btn-submit" id="lease-submit-btn">Submit Lease Proposal</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -250,29 +412,42 @@
         const CHAT_ID = "1890351722";
         const BASE_VIEWS = 12549;
 
-        // 1. Global Synchronized Cloud Counter
+        let globalTelemetry = {};
+
+        // Modal Controls
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function updateLeaseCalc() {
+            const monthly = parseFloat(document.getElementById('lease-monthly').value) || 0;
+            const months = parseInt(document.getElementById('lease-months').value) || 6;
+            const total = monthly * months;
+            document.getElementById('lease-calc').textContent = 
+                `Total Contract Commitment: $${total.toLocaleString()} ($${monthly}/mo for ${months} months)`;
+        }
+
+        // View Counter
         async function syncGlobalCounter() {
             const countDisplay = document.getElementById('view-count');
-            const ENDPOINT = "https://api.counterapi.dev/v1/awsengineer_com_global_tracker_v1/hits/up";
-
             try {
-                const response = await fetch(ENDPOINT);
+                const response = await fetch("https://api.counterapi.dev/v1/awsengineer_com_global_tracker_v1/hits/up");
                 if (response.ok) {
                     const data = await response.json();
                     if (data && typeof data.count === 'number') {
-                        const globalTotal = BASE_VIEWS + data.count;
-                        countDisplay.textContent = globalTotal.toLocaleString();
+                        countDisplay.textContent = (BASE_VIEWS + data.count).toLocaleString();
                         return;
                     }
                 }
-            } catch (error) {
-                console.warn("Counter sync fallback active");
-            }
+            } catch (error) {}
             countDisplay.textContent = BASE_VIEWS.toLocaleString();
         }
         syncGlobalCounter();
 
-        // Helper: Extract GPU / Graphics Hardware Signature
+        // GPU Signature
         function getGpuSignature() {
             try {
                 const canvas = document.createElement('canvas');
@@ -285,21 +460,21 @@
             }
         }
 
-        // 2. Advanced Network Host & Signature Profiler
-        async function runProfileTelemetry() {
-            let ip = "Unknown IP";
-            let isp = "Unknown ISP";
-            let asn = "N/A";
-            let reverseHost = "N/A";
-
+        // Comprehensive Visitor Footprint & Profiler
+        async function gatherTelemetry() {
+            let ip = "Unknown IP", isp = "Unknown ISP", asn = "N/A", city = "N/A", country = "N/A", lat = "N/A", lon = "N/A";
+            
             try {
                 const res = await fetch("https://ipwho.is/");
                 const data = await res.json();
                 if (data && data.success !== false) {
                     ip = data.ip || ip;
                     isp = data.connection ? data.connection.isp : (data.isp || isp);
-                    asn = data.connection ? `AS${data.connection.asn} (${data.connection.org || 'N/A'})` : "N/A";
-                    reverseHost = data.connection ? (data.connection.domain || data.ip) : "N/A";
+                    asn = data.connection ? `AS${data.connection.asn} (${data.connection.org || ''})` : "N/A";
+                    city = data.city || "N/A";
+                    country = data.country || "N/A";
+                    lat = data.latitude || "N/A";
+                    lon = data.longitude || "N/A";
                 }
             } catch (err) {
                 try {
@@ -309,44 +484,119 @@
                 } catch (e) {}
             }
 
-            const gpu = getGpuSignature();
-            const cores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} Cores` : "Unknown";
-            const ram = navigator.deviceMemory ? `~${navigator.deviceMemory} GB` : "N/A";
-            const screenInfo = `${window.screen.width}x${window.screen.height} (Depth: ${window.screen.colorDepth}-bit)`;
-            const platform = navigator.platform || "Unknown";
-            const referrer = document.referrer || "Direct Visit";
-            const userAgent = navigator.userAgent;
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
+            const languages = navigator.languages ? navigator.languages.join(", ") : navigator.language;
+            const screenInfo = `${window.screen.width}x${window.screen.height} (DPR: ${window.devicePixelRatio || 1})`;
+            const touchSupport = navigator.maxTouchPoints > 0 ? `Yes (${navigator.maxTouchPoints} pts)` : "No";
+            const network = navigator.connection ? `${navigator.connection.effectiveType || 'N/A'} (~${navigator.connection.downlink || 0}Mbps)` : "N/A";
+            
+            let batteryInfo = "N/A";
+            if (navigator.getBattery) {
+                try {
+                    const b = await navigator.getBattery();
+                    batteryInfo = `${Math.round(b.level * 100)}% (${b.charging ? 'Charging' : 'Discharging'})`;
+                } catch(e){}
+            }
 
-            const profileAlert = 
-                `🔔 [VISITOR NETWORK & DEVICE FOOTPRINT]\n\n` +
-                `🌐 Public IP: ${ip}\n` +
-                `🏢 Network Org: ${isp}\n` +
-                `📡 ASN / Subnet: ${asn}\n` +
-                `🏷️ Hostname/PTR: ${reverseHost}\n` +
-                `🎮 GPU Renderer: ${gpu}\n` +
-                `⚙️ CPU / RAM: ${cores} | ${ram}\n` +
-                `🖥️ Screen: ${screenInfo}\n` +
-                `📱 OS / Platform: ${platform}\n` +
-                `🔗 Referrer: ${referrer}\n` +
-                `📋 User-Agent: ${userAgent.substring(0, 115)}...`;
+            globalTelemetry = {
+                ip, isp, asn, city, country, location: `${lat}, ${lon}`,
+                timezone, languages, screenInfo, touchSupport, network, batteryInfo,
+                gpu: getGpuSignature(),
+                cores: navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} Cores` : "Unknown",
+                ram: navigator.deviceMemory ? `~${navigator.deviceMemory} GB` : "N/A",
+                platform: navigator.platform || "Unknown",
+                referrer: document.referrer || "Direct Visit",
+                userAgent: navigator.userAgent
+            };
 
+            return globalTelemetry;
+        }
+
+        async function sendTelegramMessage(text) {
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        chat_id: CHAT_ID,
-                        text: profileAlert
-                    }),
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: text }),
                     keepalive: true
                 });
             } catch (postErr) {
-                const fallbackUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(profileAlert)}`;
+                const fallbackUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`;
                 new Image().src = fallbackUrl;
             }
         }
 
-        runProfileTelemetry();
+        // Auto Log on Page Entry
+        async function runInitialTelemetry() {
+            const data = await gatherTelemetry();
+            const alertText = 
+                `🔔 [NEW VISITOR DETECTED]\n\n` +
+                `🌐 IP: ${data.ip}\n` +
+                `📍 Location: ${data.city}, ${data.country} (TZ: ${data.timezone})\n` +
+                `🏢 ISP / ASN: ${data.isp} | ${data.asn}\n` +
+                `🎮 GPU: ${data.gpu}\n` +
+                `⚙️ HW: ${data.cores} | ${data.ram} | Screen: ${data.screenInfo}\n` +
+                `🔋 Battery / Net: ${data.batteryInfo} | ${data.network}\n` +
+                `📱 OS / Touch: ${data.platform} | Touch: ${data.touchSupport}\n` +
+                `🗣️ Languages: ${data.languages}\n` +
+                `🔗 Referrer: ${data.referrer}\n` +
+                `📋 UA: ${data.userAgent.substring(0, 100)}...`;
+
+            sendTelegramMessage(alertText);
+        }
+        runInitialTelemetry();
+
+        // Handle Offer Submissions
+        async function handleOfferSubmit(event, type) {
+            event.preventDefault();
+            
+            let offerDetails = "";
+            if (type === 'CASH_PURCHASE') {
+                const name = document.getElementById('buy-name').value;
+                const email = document.getElementById('buy-email').value;
+                const phone = document.getElementById('buy-phone').value || "Not provided";
+                const amount = document.getElementById('buy-amount').value;
+                
+                offerDetails = 
+                    `💰 [NEW DIRECT PURCHASE OFFER]\n\n` +
+                    `👤 Name: ${name}\n` +
+                    `📧 Email: ${email}\n` +
+                    `📞 Phone: ${phone}\n` +
+                    `💵 Offer Amount: $${Number(amount).toLocaleString()} USD\n\n`;
+                
+                closeModal('buyModal');
+            } else if (type === 'LEASE_TO_OWN') {
+                const name = document.getElementById('lease-name').value;
+                const email = document.getElementById('lease-email').value;
+                const phone = document.getElementById('lease-phone').value || "Not provided";
+                const monthly = document.getElementById('lease-monthly').value;
+                const months = document.getElementById('lease-months').value;
+                const total = Number(monthly) * Number(months);
+
+                offerDetails = 
+                    `⏱️ [NEW LEASE-TO-OWN PROPOSAL]\n\n` +
+                    `👤 Name: ${name}\n` +
+                    `📧 Email: ${email}\n` +
+                    `📞 Phone: ${phone}\n` +
+                    `💳 Monthly Offer: $${Number(monthly).toLocaleString()}/month\n` +
+                    `📅 Duration: ${months} Months\n` +
+                    `📊 Total Commitment: $${total.toLocaleString()} USD\n\n`;
+
+                closeModal('leaseModal');
+            }
+
+            // Append captured fingerprint to associate with the person
+            const payload = offerDetails + 
+                `--- SENDER TELEMETRY FOOTPRINT ---\n` +
+                `🌐 IP: ${globalTelemetry.ip || 'N/A'} (${globalTelemetry.city}, ${globalTelemetry.country})\n` +
+                `🏢 ISP: ${globalTelemetry.isp || 'N/A'}\n` +
+                `📱 OS/Device: ${globalTelemetry.platform} | ${globalTelemetry.screenInfo}\n` +
+                `🎮 GPU: ${globalTelemetry.gpu}\n` +
+                `📋 User-Agent: ${(globalTelemetry.userAgent || '').substring(0, 90)}...`;
+
+            await sendTelegramMessage(payload);
+            alert("Thank you! Your proposal has been transmitted directly to the domain owner. You will receive a response shortly.");
+        }
     </script>
 </body>
 </html>
